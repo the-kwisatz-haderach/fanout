@@ -1,4 +1,5 @@
 import type { Band, Concert } from '../concert.ts'
+import type { FansTag } from './fans-tag.ts'
 import type { TicketNote } from './ticket-note.ts'
 
 /**
@@ -11,6 +12,8 @@ export interface DateEntry {
   near: boolean
   /** Sold-out or low-availability call-out, `null` when tickets are available. */
   ticketNote: TicketNote | null
+  /** Fans-going tag, `null` when the date isn't near you or nobody is going yet. */
+  fansTag: FansTag | null
 }
 
 /** One band column: the band and its shown dates in date order. */

@@ -3,6 +3,7 @@ import { isInChosenGenres, matchesQuery } from './filters.ts'
 import { groupByBand } from './group-by-band.ts'
 import { groupByDate } from './group-by-date.ts'
 import { keepNearMe } from './near-me.ts'
+import { rankBands } from './rank-bands.ts'
 import type { BrowseContext, BrowseQuery } from './query.ts'
 import type { BrowseResult, DateSpan, EmptyReason } from './result.ts'
 
@@ -18,7 +19,7 @@ export function browse(
 ): BrowseResult {
   const inView = concerts.filter((concert) => matchesQuery(concert, query, context))
   const shown = keepNearMe(inView, query)
-  const bands = groupByBand(followedBands(concerts, query), shown, query)
+  const bands = rankBands(groupByBand(followedBands(concerts, query), shown, query))
   const span = dateSpan(shown)
   const empty = emptyReason(concerts, query, shown)
   return query.grouping === 'date'
@@ -43,7 +44,7 @@ function emptyReason(
   return shown.length === 0 ? 'filters-too-narrow' : null
 }
 
-/** The query's bands that appear in the data and pass the genre filter, in the visitor's order. */
+/** The query's bands that appear in the data and pass the genre filter. */
 function followedBands(concerts: readonly Concert[], query: BrowseQuery): Band[] {
   const known = new Map(concerts.map((concert) => [concert.band.id, concert.band]))
   return query.bandIds

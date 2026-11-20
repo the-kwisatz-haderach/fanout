@@ -10,6 +10,7 @@ import { DayColumns } from "./day-columns";
 import { EmptyResult } from "./empty-result";
 import { GroupingControl } from "./grouping-control";
 import { GenreFilter } from "./panel/genre-filter";
+import { FansLikeMeToggle } from "./panel/fans-like-me-toggle";
 import { NearMeToggle } from "./panel/near-me-toggle";
 import { useBrowseQueryContext } from "./use-browse-query";
 import { useDatesInView } from "./use-dates-in-view";
@@ -28,7 +29,7 @@ export function BrowseClient({
   /** `YYYY-MM-DD`, from the server, so date ranges count from the same day. */
   today: string;
 }) {
-  const { query, setGenreIds, setNearMeOnly, setGrouping, clearFilters } =
+  const { query, setGenreIds, setNearMeOnly, setFansLikeMeOnly, setGrouping, clearFilters } =
     useBrowseQueryContext();
   const result = browse(concerts, query, { today });
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -44,6 +45,7 @@ export function BrowseClient({
             onChange={setNearMeOnly}
             noCity={query.cityId === null}
           />
+          <FansLikeMeToggle checked={query.fansLikeMeOnly} onChange={setFansLikeMeOnly} />
         </>
       }
       results={
