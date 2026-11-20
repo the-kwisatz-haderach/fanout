@@ -9,6 +9,8 @@ export { topSearch } from './browse/top-search.ts'
 export type { SearchCatalog, TopSearchResult } from './browse/top-search.ts'
 export { clearFilters } from './browse/clear-filters.ts'
 export { DEFAULT_BROWSE_QUERY } from './browse/query.ts'
+export { restoreFilters, savedFiltersOf } from './browse/saved-filters.ts'
+export type { BrowseFilters } from './browse/saved-filters.ts'
 export type { BrowseContext, BrowseQuery, Grouping } from './browse/query.ts'
 export type {
   BandGroup,
@@ -23,3 +25,4 @@ export type {
   TourSummary,
 } from './browse/result.ts'
 export type { TicketNote } from './browse/ticket-note.ts'
+export type { FansTag, FansTagStep } from './browse/fans-tag.ts'

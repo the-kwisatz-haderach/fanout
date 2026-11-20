@@ -18,7 +18,7 @@ export interface BrowseQuery {
   dateRangeId: DateRangeId
   /** Hide dates that aren't near you. Ignored when no city is selected. */
   nearMeOnly: boolean
-  /** Keep only dates where a going fan shares your bands. Not applied yet (#8). */
+  /** Keep only dates where a going fan shares your bands. */
   fansLikeMeOnly: boolean
   /** Columns by band, or day headings by date. */
   grouping: Grouping
