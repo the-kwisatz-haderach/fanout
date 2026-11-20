@@ -15,7 +15,7 @@ if (!result.success) {
     'invalid environment variables: ',
     z.prettifyError(result.error),
   )
-  process.exit(1)
+  throw result.error
 }
 
 export const env = result.data

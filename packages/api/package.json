@@ -31,7 +31,7 @@
     "@types/node": "catalog:",
     "typescript": "catalog:",
     "eslint": "catalog:",
-    "@eslint-recommended/eslint-config-typescript": "catalog:",
-    "eslint-plugin-n": "catalog:"
+    "@fanout/eslint-config": "catalog:",
+    "@typescript/native": "catalog:"
   }
 }

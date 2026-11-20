@@ -22,7 +22,9 @@
     "eslint-config-next": "16.4.5",
     "tailwindcss": "^4",
     "typescript": "catalog:",
-    "@fanout/typescript-config": "catalog:"
+    "@fanout/typescript-config": "catalog:",
+    "@fanout/eslint-config": "catalog:",
+    "@typescript/native": "catalog:"
   },
   "packageManager": "pnpm@12.16.1"
 }

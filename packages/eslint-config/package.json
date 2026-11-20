@@ -1,9 +1,22 @@
 {
   "name": "@fanout/eslint-config",
   "private": true,
+  "type": "module",
+  "exports": {
+    "./base": "./base.js",
+    "./node": "./node.js"
+  },
+  "dependencies": {
+    "@eslint/js": "catalog:",
+    "eslint-plugin-n": "catalog:",
+    "typescript-eslint": "catalog:"
+  },
   "peerDependencies": {
-    "@eslint-recommended/eslint-config-typescript": "^50.1.0",
-    "eslint-plugin-n": "^18.5.0",
-    "eslint": "catalog:"
+    "eslint": "catalog:",
+    "typescript": "catalog:"
+  },
+  "devDependencies": {
+    "eslint": "catalog:",
+    "typescript": "catalog:"
   }
 }

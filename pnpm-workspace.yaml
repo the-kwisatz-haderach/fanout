@@ -4,10 +4,13 @@ allowBuilds:
   sharp: false
   unrs-resolver: false
 catalog:
-  typescript: ^7.0.2
+  typescript: npm:@typescript/typescript6@^6.0.2
+  '@typescript/native': npm:typescript@^7.0.2
   '@fanout/typescript-config': 'workspace:*'
   eslint: '^10.14.0'
   '@types/node': '^26.6.6'
   '@types/react': '^19'
-  '@eslint-recommended/eslint-config-typescript': '^50.1.0'
+  '@eslint/js': '^10.0.1'
+  'typescript-eslint': '^8.72.1'
+  '@fanout/eslint-config': 'workspace:*'
   'eslint-plugin-n': '^18.5.0'
