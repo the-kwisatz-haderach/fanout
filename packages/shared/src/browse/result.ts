@@ -7,6 +7,8 @@ import type { TicketNote } from './ticket-note.ts'
  */
 export interface DateEntry {
   concert: Concert
+  /** In the visitor's selected city. Always `false` when no city is selected. */
+  near: boolean
   /** Sold-out or low-availability call-out, `null` when tickets are available. */
   ticketNote: TicketNote | null
 }
@@ -16,6 +18,11 @@ export interface BandGroup {
   band: Band
   summary: TourSummary
   dates: DateEntry[]
+  /**
+   * A city is selected and none of the band's dates in the window are near it. Its
+   * `dates` are then its nearest dates, shown quieter.
+   */
+  noDatesNear: boolean
 }
 
 /** Facts for a band's tour summary line, over its shown dates. */

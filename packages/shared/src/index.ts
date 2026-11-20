@@ -7,7 +7,7 @@ export { browse } from './browse/browse.ts'
 export { searchBands } from './browse/band-search.ts'
 export { clearFilters } from './browse/clear-filters.ts'
 export { DEFAULT_BROWSE_QUERY } from './browse/query.ts'
-export type { BrowseQuery, Grouping } from './browse/query.ts'
+export type { BrowseContext, BrowseQuery, Grouping } from './browse/query.ts'
 export type {
   BandGroup,
   BandGroupedResult,

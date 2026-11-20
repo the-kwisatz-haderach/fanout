@@ -2,8 +2,9 @@ import type { Band, Concert } from '../concert.ts'
 import { isInChosenGenres, matchesQuery } from './filters.ts'
 import { groupByBand } from './group-by-band.ts'
 import { groupByDate } from './group-by-date.ts'
+import { keepNearMe } from './near-me.ts'
 import { popularBands } from './popular-bands.ts'
-import type { BrowseQuery } from './query.ts'
+import type { BrowseContext, BrowseQuery } from './query.ts'
 import type { BandSource, BrowseResult, DateSpan, EmptyReason } from './result.ts'
 
 /**
@@ -11,11 +12,16 @@ import type { BandSource, BrowseResult, DateSpan, EmptyReason } from './result.t
  * query, returns a render-ready result. Pure: no React, no browser APIs, no input
  * mutation.
  */
-export function browse(concerts: readonly Concert[], query: BrowseQuery): BrowseResult {
-  const { source, bands: shownBands } = bandsToShow(concerts, query)
+export function browse(
+  concerts: readonly Concert[],
+  query: BrowseQuery,
+  context: BrowseContext,
+): BrowseResult {
+  const { source, bands: shownBands } = bandsToShow(concerts, query, context)
   const shownQuery = { ...query, bandIds: shownBands.map((band) => band.id) }
-  const shown = concerts.filter((concert) => matchesQuery(concert, shownQuery))
-  const bands = groupByBand(shownBands, shown)
+  const inView = concerts.filter((concert) => matchesQuery(concert, shownQuery, context))
+  const shown = keepNearMe(inView, shownQuery)
+  const bands = groupByBand(shownBands, shown, shownQuery)
   const span = dateSpan(shown)
   // The visitor's own bands decide "no bands" vs "filters too narrow", even if filters hid them.
   const empty = emptyReason(concerts, source === 'yours' ? query : shownQuery, shown)
@@ -39,11 +45,12 @@ function dateSpan(shown: readonly Concert[]): DateSpan | null {
 function bandsToShow(
   concerts: readonly Concert[],
   query: BrowseQuery,
+  context: BrowseContext,
 ): { source: BandSource; bands: Band[] } {
   if (query.bandIds.length > 0) return { source: 'yours', bands: followedBands(concerts, query) }
   // Every filter except "followed band": a concert counts if its own band were followed.
   const candidates = concerts.filter((concert) =>
-    matchesQuery(concert, { ...query, bandIds: [concert.band.id] }),
+    matchesQuery(concert, { ...query, bandIds: [concert.band.id] }, context),
   )
   return { source: 'popular', bands: popularBands(candidates) }
 }

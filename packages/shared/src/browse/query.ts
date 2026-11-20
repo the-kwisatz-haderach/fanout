@@ -12,11 +12,11 @@ export interface BrowseQuery {
   bandIds: string[]
   /** Only show bands in any of these genres. Empty means all genres. */
   genreIds: string[]
-  /** The visitor's city; dates there are "near you". `null` is any city. Not applied yet (#7). */
+  /** The visitor's city; dates there are "near you". `null` is any city. */
   cityId: string | null
-  /** Window of upcoming dates to show. Not applied yet (#7). */
+  /** Window of upcoming dates to show, counted from `BrowseContext.today`. */
   dateRangeId: DateRangeId
-  /** Hide dates that aren't near you. Not applied yet (#7). */
+  /** Hide dates that aren't near you. Ignored when no city is selected. */
   nearMeOnly: boolean
   /** Keep only dates where a going fan shares your bands. Not applied yet (#8). */
   fansLikeMeOnly: boolean
@@ -32,4 +32,10 @@ export const DEFAULT_BROWSE_QUERY: BrowseQuery = {
   nearMeOnly: false,
   fansLikeMeOnly: false,
   grouping: 'band',
+}
+
+/** Facts about the moment of browsing that aren't the visitor's choice. */
+export interface BrowseContext {
+  /** Today's calendar date, `YYYY-MM-DD`. Dates before it are past. */
+  today: string
 }

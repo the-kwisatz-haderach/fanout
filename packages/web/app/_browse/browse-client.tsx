@@ -1,45 +1,41 @@
 "use client";
 
 import { useMemo, useRef } from "react";
-import {
-  browse,
-  type Band,
-  type BrowseQuery,
-  type BrowseResult,
-  type Concert,
-  type Genre,
-} from "@fanout/shared";
+import { browse, type Band, type BrowseResult, type Concert, type Genre } from "@fanout/shared";
 import { BandColumns } from "./band-columns";
 import { BrowseLayout } from "./browse-layout";
+import { cityName } from "./cities";
 import { DateRangeBar } from "./date-range-bar";
 import { DayColumns } from "./day-columns";
 import { EmptyResult } from "./empty-result";
 import { GroupingControl } from "./grouping-control";
 import { GenreFilter } from "./panel/genre-filter";
+import { NearMeToggle } from "./panel/near-me-toggle";
 import { YourBands } from "./panel/your-bands";
 import { PopularHeading } from "./popular-heading";
 import { ResultsPlaceholder } from "./results-placeholder";
-import { useBrowseQuery } from "./use-browse-query";
+import { useBrowseQueryContext } from "./use-browse-query";
 import { useDatesInView } from "./use-dates-in-view";
 
 /**
- * Holds the visitor's query, runs it through the browse module and renders the
+ * Reads the visitor's query, runs it through the browse module and renders the
  * panel and results. Holds no browse logic of its own.
  */
 export function BrowseClient({
   concerts,
   bands,
   genres,
-  defaultQuery,
+  today,
 }: {
   concerts: readonly Concert[];
   bands: readonly Band[];
   genres: readonly Genre[];
-  defaultQuery: BrowseQuery;
+  /** `YYYY-MM-DD`, from the server, so date ranges count from the same day. */
+  today: string;
 }) {
-  const { query, setBandIds, setGenreIds, setGrouping, clearFilters } =
-    useBrowseQuery(defaultQuery);
-  const result = useMemo(() => (query === null ? null : browse(concerts, query)), [concerts, query]);
+  const { query, bandsReady, setBandIds, setGenreIds, setNearMeOnly, setGrouping, clearFilters } =
+    useBrowseQueryContext();
+  const result = useMemo(() => browse(concerts, query, { today }), [concerts, query, today]);
   const resultsRef = useRef<HTMLDivElement>(null);
   const inView = useDatesInView(resultsRef, result);
 
@@ -47,34 +43,39 @@ export function BrowseClient({
     <BrowseLayout
       panel={
         <>
-          <YourBands bands={bands} chosenIds={query?.bandIds ?? null} onChange={setBandIds} />
-          <GenreFilter
-            genres={genres}
-            selected={(query ?? defaultQuery).genreIds}
-            onChange={setGenreIds}
+          <YourBands
+            bands={bands}
+            chosenIds={bandsReady ? query.bandIds : null}
+            onChange={setBandIds}
+          />
+          <GenreFilter genres={genres} selected={query.genreIds} onChange={setGenreIds} />
+          <NearMeToggle
+            checked={query.nearMeOnly}
+            onChange={setNearMeOnly}
+            noCity={query.cityId === null}
           />
         </>
       }
       results={
-        result === null ? (
-          // Saved bands are read on the client; until then, the same skeleton as loading.
-          <>
-            <DateRangeBar span={undefined} />
-            <ResultsPlaceholder />
-          </>
-        ) : (
+        bandsReady ? (
           <>
             <DateRangeBar span={inView ?? result.span}>
-              <GroupingControl value={result.grouping} onChange={setGrouping} />
+              <GroupingControl value={query.grouping} onChange={setGrouping} />
             </DateRangeBar>
             {result.source === "popular" && <PopularHeading />}
             <div ref={resultsRef}>
               {result.empty ? (
                 <EmptyResult reason={result.empty} onClearFilters={clearFilters} />
               ) : (
-                <Results result={result} />
+                <Results result={result} cityName={cityName(query.cityId)} />
               )}
             </div>
+          </>
+        ) : (
+          // Saved bands are read in the browser; until then, the same skeleton as loading.
+          <>
+            <DateRangeBar span={undefined} />
+            <ResultsPlaceholder />
           </>
         )
       }
@@ -82,10 +83,10 @@ export function BrowseClient({
   );
 }
 
-function Results({ result }: { result: BrowseResult }) {
+function Results({ result, cityName }: { result: BrowseResult; cityName: string | null }) {
   return result.grouping === "date" ? (
     <DayColumns days={result.days} />
   ) : (
-    <BandColumns bands={result.bands} />
+    <BandColumns bands={result.bands} cityName={cityName} />
   );
 }

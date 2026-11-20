@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { DATE_RANGES, DEFAULT_DATE_RANGE_ID } from "@fanout/shared";
+import { CitySelect } from "./_browse/city-select";
+import { DateRangeSelect } from "./_browse/date-range-select";
 
 const control =
   "h-10 border border-bone/40 bg-ink px-3 text-bone focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-process";
 
-/** Logo, search, city and date-range selects, sign-in. Not wired up yet. */
+/** Logo, search, city and date-range selects, sign-in. Search and sign-in not wired up yet. */
 export function TopBar() {
   return (
     <header className="flex flex-wrap items-center gap-x-4 gap-y-3 border-b border-bone/20 px-4 py-3 md:px-6">
@@ -28,23 +29,8 @@ export function TopBar() {
         />
       </form>
 
-      <label className="flex items-center gap-2">
-        <span className="sr-only">City</span>
-        <select name="city" defaultValue="" className={control}>
-          <option value="">Any city</option>
-        </select>
-      </label>
-
-      <label className="flex items-center gap-2">
-        <span className="sr-only">Date range</span>
-        <select name="range" defaultValue={DEFAULT_DATE_RANGE_ID} className={control}>
-          {DATE_RANGES.map((range) => (
-            <option key={range.id} value={range.id}>
-              {range.label}
-            </option>
-          ))}
-        </select>
-      </label>
+      <CitySelect className={control} />
+      <DateRangeSelect className={control} />
 
       <Link
         href="/sign-in"
