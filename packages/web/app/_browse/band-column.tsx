@@ -2,9 +2,7 @@ import type { BandGroup } from "@fanout/shared";
 import { DateRow } from "./date-row";
 import { NoDatesNear } from "./near-you";
 import { tourSummaryLine } from "./format";
-
-/** Top-rule inks, cycled per column in page order. */
-const RULES = ["border-bone", "border-pink", "border-process"] as const;
+import { topRuleClass } from "./column-grid";
 
 /** One band's run of dates, like a column on the back of a tour shirt. */
 export function BandColumn({
@@ -21,7 +19,7 @@ export function BandColumn({
   return (
     <section
       aria-labelledby={headingId}
-      className={`min-w-0 border-t-4 pt-3 ${RULES[index % RULES.length]}`}
+      className={`min-w-0 border-t-4 pt-3 ${topRuleClass(index)}`}
     >
       <h2
         id={headingId}

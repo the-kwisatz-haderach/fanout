@@ -1,5 +1,13 @@
 import type { ReactNode } from "react";
 
+/** Top-rule inks for result columns, cycled in page order (bone, pink, yellow). */
+const TOP_RULES = ["border-bone", "border-pink", "border-process"] as const;
+
+/** The top-rule class for the column at `index` in page order. */
+export function topRuleClass(index: number): string {
+  return TOP_RULES[index % TOP_RULES.length] ?? TOP_RULES[0];
+}
+
 /**
  * Columns of at most 20rem: a wider screen adds whole columns (up to four) instead
  * of making lines longer. Shared by results and their loading placeholder so the

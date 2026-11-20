@@ -1,10 +1,7 @@
 import type { DayGroup } from "@fanout/shared";
-import { ColumnGrid } from "./column-grid";
+import { ColumnGrid, topRuleClass } from "./column-grid";
 import { DateRow } from "./date-row";
 import { dayHeading, fullDate } from "./format";
-
-/** Top-rule inks, cycled per column in page order (as band columns). */
-const RULES = ["border-bone", "border-pink", "border-process"] as const;
 
 /** The by-date result: one column per day, in the order the browse module gives. */
 export function DayColumns({ days }: { days: readonly DayGroup[] }) {
@@ -16,7 +13,7 @@ export function DayColumns({ days }: { days: readonly DayGroup[] }) {
           <section
             key={day.date}
             aria-labelledby={headingId}
-            className={`min-w-0 border-t-4 pt-3 ${RULES[index % RULES.length]}`}
+            className={`min-w-0 border-t-4 pt-3 ${topRuleClass(index)}`}
           >
             <h2
               id={headingId}
