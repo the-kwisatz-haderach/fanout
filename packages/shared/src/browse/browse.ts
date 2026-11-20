@@ -1,9 +1,10 @@
 import type { Band, Concert } from '../concert.ts'
 import { isInChosenGenres, matchesQuery } from './filters.ts'
 import { groupByBand } from './group-by-band.ts'
+import { groupByDate } from './group-by-date.ts'
 import { popularBands } from './popular-bands.ts'
 import type { BrowseQuery } from './query.ts'
-import type { BandSource, BrowseResult, EmptyReason } from './result.ts'
+import type { BandSource, BrowseResult, DateSpan, EmptyReason } from './result.ts'
 
 /**
  * The page's only source of browse behaviour: takes every concert and the visitor's
@@ -11,16 +12,24 @@ import type { BandSource, BrowseResult, EmptyReason } from './result.ts'
  * mutation.
  */
 export function browse(concerts: readonly Concert[], query: BrowseQuery): BrowseResult {
-  const { source, bands } = bandsToShow(concerts, query)
-  const shownQuery = { ...query, bandIds: bands.map((band) => band.id) }
+  const { source, bands: shownBands } = bandsToShow(concerts, query)
+  const shownQuery = { ...query, bandIds: shownBands.map((band) => band.id) }
   const shown = concerts.filter((concert) => matchesQuery(concert, shownQuery))
-  return {
-    grouping: 'band',
-    source,
-    bands: groupByBand(bands, shown),
-    // The visitor's own bands decide "no bands" vs "filters too narrow", even if filters hid them.
-    empty: emptyReason(concerts, source === 'yours' ? query : shownQuery, shown),
-  }
+  const bands = groupByBand(shownBands, shown)
+  const span = dateSpan(shown)
+  // The visitor's own bands decide "no bands" vs "filters too narrow", even if filters hid them.
+  const empty = emptyReason(concerts, source === 'yours' ? query : shownQuery, shown)
+  return query.grouping === 'date'
+    ? { grouping: 'date', source, days: groupByDate(bands), span, empty }
+    : { grouping: 'band', source, bands, span, empty }
+}
+
+/** First and last date among the shown concerts. */
+function dateSpan(shown: readonly Concert[]): DateSpan | null {
+  const dates = shown.map((concert) => concert.date).sort()
+  const firstDate = dates[0]
+  const lastDate = dates.at(-1)
+  return firstDate && lastDate ? { firstDate, lastDate } : null
 }
 
 /**

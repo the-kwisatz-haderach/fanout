@@ -50,6 +50,20 @@ export function tourSummaryLine(summary: TourSummary): string {
   return parts.join(" · ");
 }
 
+/** e.g. "28 Nov – 15 Dec", or "28 Nov" for a single day. */
+export function dateSpanLabel(span: { firstDate: string; lastDate: string }): string {
+  const first = dayMonth.format(utc(span.firstDate));
+  return span.firstDate === span.lastDate
+    ? first
+    : `${first} – ${dayMonth.format(utc(span.lastDate))}`;
+}
+
+/** Day heading for by-date results, e.g. "Fri 4 Dec". */
+export function dayHeading(isoDate: string): string {
+  const { day, month } = dateParts(isoDate);
+  return `${day} ${month}`;
+}
+
 function plural(count: number, one: string, many = `${one}s`): string {
   return `${count} ${count === 1 ? one : many}`;
 }

@@ -20,7 +20,7 @@ export interface BrowseQuery {
   nearMeOnly: boolean
   /** Keep only dates where a going fan shares your bands. Not applied yet (#8). */
   fansLikeMeOnly: boolean
-  /** Columns by band, or day headings by date. Only `'band'` is applied yet (#11). */
+  /** Columns by band, or day headings by date. */
   grouping: Grouping
 }
 

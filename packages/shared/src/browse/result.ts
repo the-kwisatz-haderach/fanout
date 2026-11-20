@@ -28,7 +28,7 @@ export interface TourSummary {
 }
 
 /** Render-ready output of `browse()`. Discriminated by grouping. */
-export type BrowseResult = BandGroupedResult
+export type BrowseResult = BandGroupedResult | DateGroupedResult
 
 /**
  * Where the shown bands come from: the visitor's own (`'yours'`), or popular bands
@@ -40,8 +40,34 @@ export interface BandGroupedResult {
   grouping: 'band'
   source: BandSource
   bands: BandGroup[]
+  /** First and last shown date, or `null` when nothing is shown. */
+  span: DateSpan | null
   /** Why nothing is shown, or `null` when there are dates to show. */
   empty: EmptyReason | null
+}
+
+/** The same shown dates as by band, under day headings in date order. */
+export interface DateGroupedResult {
+  grouping: 'date'
+  source: BandSource
+  days: DayGroup[]
+  /** First and last shown date, or `null` when nothing is shown. */
+  span: DateSpan | null
+  /** Why nothing is shown, or `null` when there are dates to show. */
+  empty: EmptyReason | null
+}
+
+/** One day heading and its dates, in the by-band result's band order. */
+export interface DayGroup {
+  /** `YYYY-MM-DD`. */
+  date: string
+  dates: DateEntry[]
+}
+
+/** An inclusive range of `YYYY-MM-DD` dates. */
+export interface DateSpan {
+  firstDate: string
+  lastDate: string
 }
 
 /**

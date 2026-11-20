@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useSyncExternalStore } from "react";
-import { clearFilters, type BrowseQuery } from "@fanout/shared";
+import { clearFilters, type BrowseQuery, type Grouping } from "@fanout/shared";
 import { savedBandIds } from "./device-store";
 
 const notReadYet = () => null;
@@ -25,6 +25,7 @@ export function useBrowseQuery(defaults: BrowseQuery) {
     query,
     setBandIds: savedBandIds.write,
     setGenreIds: (genreIds: string[]) => setQuery((q) => ({ ...q, genreIds })),
+    setGrouping: (grouping: Grouping) => setQuery((q) => ({ ...q, grouping })),
     clearFilters: () => setQuery((q) => clearFilters(q, defaults)),
   };
 }
