@@ -91,3 +91,6 @@ export const savedBandIds = deviceValue<string[]>("fanout:band-ids", [], isStrin
  * against the page's defaults. `null` when nothing is saved or after "Clear filters".
  */
 export const savedFilters = deviceValue<unknown>("fanout:filters", null, (stored) => stored);
+
+/** Concert ids of the shows the visitor has marked, in the order they marked them. */
+export const savedMarkedShowIds = deviceValue<string[]>("fanout:marked-show-ids", [], isStringArray);

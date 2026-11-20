@@ -26,3 +26,5 @@ export type {
 } from './browse/result.ts'
 export type { TicketNote } from './browse/ticket-note.ts'
 export type { FansTag, FansTagStep } from './browse/fans-tag.ts'
+
+export { toggleMarkedShow } from './marked-shows.ts'
