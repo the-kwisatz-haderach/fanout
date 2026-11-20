@@ -4,7 +4,7 @@ const schema = z.object({
   NODE_ENV: z
     .enum(['development', 'test', 'production'])
     .default('development'),
-  PORT: z.coerce.number().int().positive().default(80),
+  PORT: z.coerce.number().int().positive().default(8000),
   HOST: z.string().default('localhost'),
 })
 
@@ -15,7 +15,7 @@ if (!result.success) {
     'invalid environment variables: ',
     z.prettifyError(result.error),
   )
-  process.exit(1)
+  throw result.error
 }
 
 export const env = result.data

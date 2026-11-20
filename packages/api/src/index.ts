@@ -18,7 +18,7 @@ fastify.listen(
   function (err, address) {
     if (err) {
       fastify.log.error(err)
-      process.exit(1)
+      throw err
     }
     console.log(`Server is now listening on ${address}`)
   },
