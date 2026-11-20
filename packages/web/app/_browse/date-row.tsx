@@ -1,23 +1,25 @@
 import Link from "next/link";
 import type { DateEntry } from "@fanout/shared";
 import { FansTag } from "./fans-tag";
+import { MarkToggle } from "./mark-toggle";
 import { nearLeadClass, NearYouLabel } from "./near-you";
 import { RowLead, type RowLeadKind } from "./row-lead";
 import { TicketNoteLabel, ticketNoteClass } from "./ticket-note";
 
 /**
  * One tour date: date (or band, when grouped by date), city and, when near you, venue,
- * linking to its concert. `data-date` lets the sticky bar track which dates are in view.
+ * linking to its concert, with a toggle to mark the show. `data-date` lets the sticky
+ * bar track which dates are in view.
  */
 export function DateRow({ entry, lead = "date" }: { entry: DateEntry; lead?: RowLeadKind }) {
   const { concert } = entry;
 
   return (
-    <li data-date={concert.date}>
+    <li data-date={concert.date} className="flex items-start gap-2">
       <Link
         href={`/concerts/${concert.id}`}
         prefetch={false}
-        className="group grid grid-cols-[7rem_1fr] items-baseline gap-x-3 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-process"
+        className="group grid min-w-0 flex-1 grid-cols-[7rem_1fr] items-baseline gap-x-3 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-process"
       >
         <RowLead
           kind={lead}
@@ -38,6 +40,7 @@ export function DateRow({ entry, lead = "date" }: { entry: DateEntry; lead?: Row
           )}
         </span>
       </Link>
+      <MarkToggle concert={concert} />
     </li>
   );
 }
