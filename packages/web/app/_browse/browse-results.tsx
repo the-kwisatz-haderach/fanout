@@ -1,6 +1,9 @@
 import { connection } from "next/server";
-import { SAMPLE_GENRES, sampleConcerts } from "@/sample-data";
+import { SAMPLE_BAND_SPECS, SAMPLE_GENRES, sampleConcerts } from "@/sample-data";
 import { BrowseClient } from "./browse-client";
+
+/** Every band the visitor can search for and add. */
+const ALL_BANDS = SAMPLE_BAND_SPECS.map((spec) => spec.band);
 
 /**
  * Loads the sample concerts (dated from today, so per request) and hands them to the
@@ -13,6 +16,7 @@ export async function BrowseResults() {
   return (
     <BrowseClient
       concerts={sampleConcerts(today)}
+      bands={ALL_BANDS}
       genres={Object.values(SAMPLE_GENRES)}
       today={today}
     />

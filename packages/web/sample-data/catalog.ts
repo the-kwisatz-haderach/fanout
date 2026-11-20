@@ -131,13 +131,3 @@ export const SAMPLE_BAND_SPECS: readonly SampleBandSpec[] = [
   spec("polaroid-funeral", "Polaroid Funeral", [g.postPunk, g.shoegaze], 9),
   spec("ash-and-ampersand", "Ash & Ampersand", [g.dreamPop, g.synthPop], 15),
 ];
-
-/** The fixed bands shown as columns until visitors choose their own. */
-export const STARTER_BAND_IDS: readonly string[] = [
-  "moth-parade",
-  "holloway-static",
-  "saltglass",
-  "grey-meridian",
-  "lighthouse-keeper",
-  "velvet-antenna",
-];

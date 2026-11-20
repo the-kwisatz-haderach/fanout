@@ -3,9 +3,10 @@ import { isInChosenGenres, matchesQuery } from './filters.ts'
 import { groupByBand } from './group-by-band.ts'
 import { groupByDate } from './group-by-date.ts'
 import { keepNearMe } from './near-me.ts'
+import { popularBands } from './popular-bands.ts'
 import { rankBands } from './rank-bands.ts'
 import type { BrowseContext, BrowseQuery } from './query.ts'
-import type { BrowseResult, DateSpan, EmptyReason } from './result.ts'
+import type { BandSource, BrowseResult, DateSpan, EmptyReason } from './result.ts'
 
 /**
  * The page's only source of browse behaviour: takes every concert and the visitor's
@@ -17,14 +18,17 @@ export function browse(
   query: BrowseQuery,
   context: BrowseContext,
 ): BrowseResult {
-  const inView = concerts.filter((concert) => matchesQuery(concert, query, context))
-  const shown = keepNearMe(inView, query)
-  const bands = rankBands(groupByBand(followedBands(concerts, query), shown, query))
+  const { source, bands: shownBands } = bandsToShow(concerts, query, context)
+  const shownQuery = { ...query, bandIds: shownBands.map((band) => band.id) }
+  const inView = concerts.filter((concert) => matchesQuery(concert, shownQuery, context))
+  const shown = keepNearMe(inView, shownQuery)
+  const bands = rankBands(groupByBand(shownBands, shown, shownQuery))
   const span = dateSpan(shown)
-  const empty = emptyReason(concerts, query, shown)
+  // The visitor's own bands decide "no bands" vs "filters too narrow", even if filters hid them.
+  const empty = emptyReason(concerts, source === 'yours' ? query : shownQuery, shown)
   return query.grouping === 'date'
-    ? { grouping: 'date', days: groupByDate(bands), span, empty }
-    : { grouping: 'band', bands, span, empty }
+    ? { grouping: 'date', source, days: groupByDate(bands), span, empty }
+    : { grouping: 'band', source, bands, span, empty }
 }
 
 /** First and last date among the shown concerts. */
@@ -33,6 +37,23 @@ function dateSpan(shown: readonly Concert[]): DateSpan | null {
   const firstDate = dates[0]
   const lastDate = dates.at(-1)
   return firstDate && lastDate ? { firstDate, lastDate } : null
+}
+
+/**
+ * The visitor's bands when they have chosen any; otherwise the most popular bands
+ * among the concerts the rest of the query lets through, so the page is never empty.
+ */
+function bandsToShow(
+  concerts: readonly Concert[],
+  query: BrowseQuery,
+  context: BrowseContext,
+): { source: BandSource; bands: Band[] } {
+  if (query.bandIds.length > 0) return { source: 'yours', bands: followedBands(concerts, query) }
+  // Every filter except "followed band": a concert counts if its own band were followed.
+  const candidates = concerts.filter((concert) =>
+    matchesQuery(concert, { ...query, bandIds: [concert.band.id] }, context),
+  )
+  return { source: 'popular', bands: popularBands(candidates) }
 }
 
 function emptyReason(

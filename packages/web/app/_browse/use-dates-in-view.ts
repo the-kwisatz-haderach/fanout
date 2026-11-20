@@ -3,8 +3,8 @@
 import { useEffect, useState, type RefObject } from "react";
 import type { DateSpan } from "@fanout/shared";
 
-/** Space the sticky date-range bar covers at the top of the viewport. */
-const STICKY_BAR_MARGIN = "-4rem 0px 0px 0px";
+/** Space the sticky date-range bar covers at the top of the viewport (4rem; rootMargin only takes px or %). */
+const STICKY_BAR_MARGIN = "-64px 0px 0px 0px";
 
 /**
  * The first and last date among the date rows (`[data-date]`) currently on screen

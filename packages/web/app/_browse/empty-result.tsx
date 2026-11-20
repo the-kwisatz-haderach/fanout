@@ -2,8 +2,8 @@ import type { EmptyReason } from "@fanout/shared";
 
 const MESSAGES: Record<EmptyReason, { heading: string; body: string }> = {
   "no-bands": {
-    heading: "No bands yet",
-    body: "Add bands you love in the filter panel to see their upcoming dates.",
+    heading: "No dates to show",
+    body: "None of your bands have upcoming dates. Add more bands in the filter panel.",
   },
   "filters-too-narrow": {
     heading: "Nothing matches",

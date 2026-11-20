@@ -4,6 +4,5 @@ export {
   SAMPLE_CITIES,
   SAMPLE_GENRES,
   SAMPLE_VENUES,
-  STARTER_BAND_IDS,
 } from "./catalog";
 export { sampleConcerts } from "./concerts";

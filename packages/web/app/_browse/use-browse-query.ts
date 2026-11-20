@@ -1,18 +1,28 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useMemo, useState, useSyncExternalStore } from "react";
 import { clearFilters, type BrowseQuery, type DateRangeId, type Grouping } from "@fanout/shared";
+import { savedBandIds } from "./device-store";
+
+const notReadYet = () => null;
 
 /**
  * The visitor's BrowseQuery as client state: one setter per field, plus
  * `clearFilters`, which puts every filter back to `defaults` but keeps the bands.
  * Called once, by `BrowseQueryProvider`; components read it with `useBrowseQueryContext`.
+ * Bands are saved on the device through `savedBandIds`; they can only be read in the
+ * browser, so until then (the server render) `bandIds` is empty and `bandsReady` false.
  */
 export function useBrowseQuery(defaults: BrowseQuery) {
-  const [query, setQuery] = useState(defaults);
+  const [state, setQuery] = useState(defaults);
+  const bandIds = useSyncExternalStore(savedBandIds.subscribe, savedBandIds.read, notReadYet);
+
+  const query = useMemo(() => ({ ...state, bandIds: bandIds ?? [] }), [state, bandIds]);
 
   return {
     query,
+    bandsReady: bandIds !== null,
+    setBandIds: savedBandIds.write,
     setGenreIds: (genreIds: string[]) => setQuery((q) => ({ ...q, genreIds })),
     setCityId: (cityId: string | null) => setQuery((q) => ({ ...q, cityId })),
     setDateRangeId: (dateRangeId: DateRangeId) => setQuery((q) => ({ ...q, dateRangeId })),
