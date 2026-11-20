@@ -1,30 +1,30 @@
-import { useMemo, useSyncExternalStore } from "react";
-import { DEFAULT_BROWSE_QUERY, type BrowseQuery } from "@fanout/shared";
-import { DEFAULT_CITY_ID } from "@/sample-data";
+"use client";
+
+import { useMemo, useState, useSyncExternalStore } from "react";
+import { clearFilters, type BrowseQuery } from "@fanout/shared";
 import { savedBandIds } from "./device-store";
-
-/** The query the page opens with, before the visitor changes anything. */
-const STARTER_QUERY: BrowseQuery = {
-  ...DEFAULT_BROWSE_QUERY,
-  cityId: DEFAULT_CITY_ID,
-};
-
-export interface BrowseQueryState {
-  /** The visitor's query, or `null` until their saved choices are read (on the server). */
-  query: BrowseQuery | null;
-  setBandIds: (bandIds: string[]) => void;
-}
 
 const notReadYet = () => null;
 
-/** The visitor's browse query, one setter per field. Saved fields persist on the device. */
-export function useBrowseQuery(): BrowseQueryState {
+/**
+ * The visitor's BrowseQuery as client state: one setter per field, plus
+ * `clearFilters`, which puts every filter back to `defaults` but keeps the bands.
+ * Bands are saved on the device, so `query` is `null` until they can be read
+ * (during the server render).
+ */
+export function useBrowseQuery(defaults: BrowseQuery) {
+  const [state, setQuery] = useState(defaults);
   const bandIds = useSyncExternalStore(savedBandIds.subscribe, savedBandIds.read, notReadYet);
 
   const query = useMemo(
-    () => (bandIds === null ? null : { ...STARTER_QUERY, bandIds }),
-    [bandIds],
+    () => (bandIds === null ? null : { ...state, bandIds }),
+    [state, bandIds],
   );
 
-  return { query, setBandIds: savedBandIds.write };
+  return {
+    query,
+    setBandIds: savedBandIds.write,
+    setGenreIds: (genreIds: string[]) => setQuery((q) => ({ ...q, genreIds })),
+    clearFilters: () => setQuery((q) => clearFilters(q, defaults)),
+  };
 }

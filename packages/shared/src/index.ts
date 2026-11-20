@@ -5,6 +5,7 @@ export type { Band, City, Concert, FanSignal, Genre, TicketState, Venue } from '
 
 export { browse } from './browse/browse.ts'
 export { searchBands } from './browse/band-search.ts'
+export { clearFilters } from './browse/clear-filters.ts'
 export { DEFAULT_BROWSE_QUERY } from './browse/query.ts'
 export type { BrowseQuery, Grouping } from './browse/query.ts'
 export type {
@@ -13,5 +14,7 @@ export type {
   BandSource,
   BrowseResult,
   DateEntry,
+  EmptyReason,
   TourSummary,
 } from './browse/result.ts'
+export type { TicketNote } from './browse/ticket-note.ts'

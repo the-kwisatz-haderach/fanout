@@ -1,4 +1,5 @@
 import type { Band, Concert } from '../concert.ts'
+import type { TicketNote } from './ticket-note.ts'
 
 /**
  * One date as the page renders it. Per-date render facts (near you, tag size, ...)
@@ -6,6 +7,8 @@ import type { Band, Concert } from '../concert.ts'
  */
 export interface DateEntry {
   concert: Concert
+  /** Sold-out or low-availability call-out, `null` when tickets are available. */
+  ticketNote: TicketNote | null
 }
 
 /** One band column: the band and its shown dates in date order. */
@@ -37,4 +40,12 @@ export interface BandGroupedResult {
   grouping: 'band'
   source: BandSource
   bands: BandGroup[]
+  /** Why nothing is shown, or `null` when there are dates to show. */
+  empty: EmptyReason | null
 }
+
+/**
+ * Why a result has no dates: the visitor hasn't chosen any bands yet, or their
+ * filters exclude every date of the bands they chose.
+ */
+export type EmptyReason = 'no-bands' | 'filters-too-narrow'

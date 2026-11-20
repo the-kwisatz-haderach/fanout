@@ -2,12 +2,12 @@ import type { ReactNode } from "react";
 
 /**
  * The yellow filter panel beside the main results area. Shared by the live page and
- * its loading fallback so nothing moves when results arrive.
+ * its loading fallback so nothing jumps when results arrive.
  */
 export function BrowseLayout({ panel, results }: { panel?: ReactNode; results: ReactNode }) {
   return (
-    <div className="flex flex-1 flex-col md:flex-row">
-      <aside aria-label="Filters" className="shrink-0 bg-process p-6 text-ink md:w-72">
+    <>
+      <aside aria-label="Filters" className="shrink-0 space-y-8 bg-process p-6 text-ink md:w-72">
         {panel}
       </aside>
       <main className="min-w-0 flex-1 p-4 md:p-6">
@@ -17,6 +17,6 @@ export function BrowseLayout({ panel, results }: { panel?: ReactNode; results: R
         </p>
         {results}
       </main>
-    </div>
+    </>
   );
 }

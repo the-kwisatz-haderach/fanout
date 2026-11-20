@@ -10,7 +10,7 @@ export type Grouping = 'band' | 'date'
 export interface BrowseQuery {
   /** The visitor's bands, in the order they chose them. One column per known band. */
   bandIds: string[]
-  /** Only show bands in any of these genres. Empty means all genres. Not applied yet (#9). */
+  /** Only show bands in any of these genres. Empty means all genres. */
   genreIds: string[]
   /** The visitor's city; dates there are "near you". `null` is any city. Not applied yet (#7). */
   cityId: string | null
