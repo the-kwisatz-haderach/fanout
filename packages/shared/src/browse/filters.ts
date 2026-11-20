@@ -1,5 +1,6 @@
 import type { Band, Concert } from '../concert.ts'
 import { DATE_RANGES } from '../date-range.ts'
+import { addDays } from '../iso-date.ts'
 import type { BrowseContext, BrowseQuery } from './query.ts'
 
 /** Decides whether one concert is shown for a query. */
@@ -50,10 +51,4 @@ export function matchesQuery(
   context: BrowseContext,
 ): boolean {
   return FILTERS.every((filter) => filter(concert, query, context))
-}
-
-function addDays(isoDate: string, days: number): string {
-  const date = new Date(`${isoDate}T00:00:00Z`)
-  date.setUTCDate(date.getUTCDate() + days)
-  return date.toISOString().slice(0, 10)
 }

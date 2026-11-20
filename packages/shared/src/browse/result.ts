@@ -1,4 +1,5 @@
 import type { Band, Concert } from '../concert.ts'
+import type { DateSpan, IsoDate } from '../iso-date.ts'
 import type { FansTag } from './fans-tag.ts'
 import type { TicketNote } from './ticket-note.ts'
 
@@ -16,14 +17,14 @@ export interface DateEntry {
   fansTag: FansTag | null
 }
 
-/** One band column: the band and its shown dates in date order. */
+/** One band column: the band and its shown dates in date order. Never empty. */
 export interface BandGroup {
   band: Band
   summary: TourSummary
   dates: DateEntry[]
   /**
-   * A city is selected and none of the band's dates in the window are near it. Its
-   * `dates` are then its nearest dates, shown quieter.
+   * A city is selected and none of the band's shown dates are near it; they are all
+   * shown quieter. With "only dates near me" on, they are its `nearestDates`.
    */
   noDatesNear: boolean
 }
@@ -32,9 +33,8 @@ export interface BandGroup {
 export interface TourSummary {
   dateCount: number
   cityCount: number
-  /** `YYYY-MM-DD`, or `null` when no dates are shown. */
-  firstDate: string | null
-  lastDate: string | null
+  /** First and last shown date. */
+  span: DateSpan
 }
 
 /** Render-ready output of `browse()`. Discriminated by grouping. */
@@ -69,19 +69,15 @@ export interface DateGroupedResult {
 
 /** One day heading and its dates, in the by-band result's band order. */
 export interface DayGroup {
-  /** `YYYY-MM-DD`. */
-  date: string
+  date: IsoDate
   dates: DateEntry[]
 }
 
-/** An inclusive range of `YYYY-MM-DD` dates. */
-export interface DateSpan {
-  firstDate: string
-  lastDate: string
-}
-
 /**
- * Why a result has no dates: the visitor hasn't chosen any bands yet, or their
- * filters exclude every date of the bands they chose.
+ * Why a result has no dates:
+ * - `'no-bands'`: filters are not the cause. There are no upcoming dates at all for
+ *   the bands in question: the visitor's chosen bands, or, with none chosen, any band.
+ * - `'filters-too-narrow'`: there are upcoming dates, but the filters exclude them
+ *   all (whether the bands are the visitor's own or popular stand-ins).
  */
 export type EmptyReason = 'no-bands' | 'filters-too-narrow'

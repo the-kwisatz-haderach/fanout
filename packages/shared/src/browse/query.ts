@@ -1,12 +1,9 @@
 import { DEFAULT_DATE_RANGE_ID, type DateRangeId } from '../date-range.ts'
+import type { IsoDate } from '../iso-date.ts'
 
 export type Grouping = 'band' | 'date'
 
-/**
- * What the visitor asked to see. The full shape from the spec is declared up front;
- * fields marked "Not applied yet" are accepted but ignored by `browse()` until their
- * ticket lands.
- */
+/** What the visitor asked to see. `browse()` applies every field. */
 export interface BrowseQuery {
   /** The visitor's bands, in the order they chose them. One column per known band. */
   bandIds: string[]
@@ -39,6 +36,6 @@ export const DEFAULT_BROWSE_QUERY: BrowseQuery = {
 
 /** Facts about the moment of browsing that aren't the visitor's choice. */
 export interface BrowseContext {
-  /** Today's calendar date, `YYYY-MM-DD`. Dates before it are past. */
-  today: string
+  /** Today's calendar date. Dates before it are past. */
+  today: IsoDate
 }

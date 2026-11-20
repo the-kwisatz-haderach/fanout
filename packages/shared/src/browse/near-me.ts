@@ -1,4 +1,4 @@
-import type { Concert } from '../concert.ts'
+import { bySoonest, type Concert } from '../concert.ts'
 import type { BrowseQuery } from './query.ts'
 import type { DateEntry } from './result.ts'
 
@@ -15,30 +15,44 @@ export function hasNoDatesNear(dates: readonly DateEntry[], query: BrowseQuery):
   return query.cityId !== null && !dates.some((entry) => entry.near)
 }
 
-/** How many of a band's dates stand in as its nearest when none are near. */
-const NEAREST_DATE_COUNT = 3
-
 /**
- * With "only dates near me" on, keeps each band's near dates. A band with none keeps
- * its soonest few instead, so its column can say so and still show where it plays.
- * Without a city there is nothing to keep, so the toggle changes nothing.
+ * Whether "only dates near me" changes anything: it is on and a city is selected.
+ * Without a city nothing is near, so the toggle is ignored.
  */
-export function keepNearMe(concerts: readonly Concert[], query: BrowseQuery): Concert[] {
-  if (!query.nearMeOnly || query.cityId === null) return [...concerts]
-  const bandsWithNearDates = new Set(
-    concerts.filter((concert) => isNear(concert, query)).map((concert) => concert.band.id),
-  )
-  const nearest = new Set<Concert>()
-  const taken = new Map<string, number>()
-  for (const concert of [...concerts].sort(soonestFirst)) {
-    if (bandsWithNearDates.has(concert.band.id)) continue
-    const count = taken.get(concert.band.id) ?? 0
-    if (count < NEAREST_DATE_COUNT) nearest.add(concert)
-    taken.set(concert.band.id, count + 1)
-  }
-  return concerts.filter((concert) => isNear(concert, query) || nearest.has(concert))
+export function nearMeApplies(query: Pick<BrowseQuery, 'nearMeOnly' | 'cityId'>): boolean {
+  return query.nearMeOnly && query.cityId !== null
 }
 
-function soonestFirst(a: Concert, b: Concert): number {
-  return a.date < b.date ? -1 : a.date > b.date ? 1 : a.id < b.id ? -1 : 1
+/** How many dates stand in as a band's nearest when none are near. */
+export const NEAREST_DATE_COUNT = 3
+
+/**
+ * A band's "nearest dates", shown when none of its dates are near you: its soonest
+ * `NEAREST_DATE_COUNT` dates.
+ *
+ * OPEN PRODUCT DECISION: there is no distance data yet, so "nearest" cannot mean
+ * closest on a map. Soonest is the prototype's stand-in; replace this rule (and only
+ * this rule) once how far "near" reaches is decided.
+ */
+export function nearestDates(bandConcerts: readonly Concert[]): Concert[] {
+  return [...bandConcerts].sort(bySoonest).slice(0, NEAREST_DATE_COUNT)
+}
+
+/**
+ * With "only dates near me" applying, keeps each band's near dates. A band with none
+ * keeps its `nearestDates` instead, so its column can say so and still show where
+ * it plays. Otherwise every date is kept.
+ */
+export function keepNearMe(concerts: readonly Concert[], query: BrowseQuery): Concert[] {
+  if (!nearMeApplies(query)) return [...concerts]
+  const byBand = new Map<string, Concert[]>()
+  for (const concert of concerts) {
+    byBand.set(concert.band.id, [...(byBand.get(concert.band.id) ?? []), concert])
+  }
+  const kept = new Set<Concert>()
+  for (const bandConcerts of byBand.values()) {
+    const near = bandConcerts.filter((concert) => isNear(concert, query))
+    for (const concert of near.length > 0 ? near : nearestDates(bandConcerts)) kept.add(concert)
+  }
+  return concerts.filter((concert) => kept.has(concert))
 }

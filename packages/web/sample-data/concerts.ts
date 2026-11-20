@@ -1,4 +1,4 @@
-import type { Concert, TicketState } from "@fanout/shared";
+import { addDays, type Concert, type IsoDate, type TicketState } from "@fanout/shared";
 import {
   DEFAULT_CITY_ID,
   SAMPLE_BAND_SPECS,
@@ -10,15 +10,15 @@ import {
 const TOUR_WINDOW_DAYS = 180;
 
 /**
- * Every sample concert, dated relative to `today` (`YYYY-MM-DD`) so the data never
+ * Every sample concert, dated relative to `today` so the data never
  * goes stale. Deterministic: the same `today` always gives the same concerts, and
  * concert ids don't depend on `today`.
  */
-export function sampleConcerts(today: string): Concert[] {
+export function sampleConcerts(today: IsoDate): Concert[] {
   return SAMPLE_BAND_SPECS.flatMap((spec) => tour(spec, today));
 }
 
-function tour(spec: SampleBandSpec, today: string): Concert[] {
+function tour(spec: SampleBandSpec, today: IsoDate): Concert[] {
   const random = seededRandom(spec.band.id);
   const venues = spec.skipsDefaultCity
     ? SAMPLE_VENUES.filter((v) => v.city.id !== DEFAULT_CITY_ID)
@@ -72,12 +72,6 @@ function pick<T>(items: readonly T[], random: () => number): T {
   const item = items[Math.floor(random() * items.length)];
   if (item === undefined) throw new Error("pick from an empty list");
   return item;
-}
-
-function addDays(isoDate: string, days: number): string {
-  const date = new Date(`${isoDate}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + days);
-  return date.toISOString().slice(0, 10);
 }
 
 /** mulberry32, seeded from a string, so fixtures are stable across runs. */

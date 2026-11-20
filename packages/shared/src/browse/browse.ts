@@ -1,4 +1,5 @@
 import type { Band, Concert } from '../concert.ts'
+import { dateSpan } from '../iso-date.ts'
 import { isInChosenGenres, matchesQuery } from './filters.ts'
 import { groupByBand } from './group-by-band.ts'
 import { groupByDate } from './group-by-date.ts'
@@ -6,7 +7,7 @@ import { keepNearMe } from './near-me.ts'
 import { popularBands } from './popular-bands.ts'
 import { rankBands } from './rank-bands.ts'
 import type { BrowseContext, BrowseQuery } from './query.ts'
-import type { BandSource, BrowseResult, DateSpan, EmptyReason } from './result.ts'
+import type { BandSource, BrowseResult, EmptyReason } from './result.ts'
 
 /**
  * The page's only source of browse behaviour: takes every concert and the visitor's
@@ -23,20 +24,11 @@ export function browse(
   const inView = concerts.filter((concert) => matchesQuery(concert, shownQuery, context))
   const shown = keepNearMe(inView, shownQuery)
   const bands = rankBands(groupByBand(shownBands, shown, shownQuery))
-  const span = dateSpan(shown)
-  // The visitor's own bands decide "no bands" vs "filters too narrow", even if filters hid them.
-  const empty = emptyReason(concerts, source === 'yours' ? query : shownQuery, shown)
+  const span = dateSpan(shown.map((concert) => concert.date))
+  const empty = shown.length > 0 ? null : emptyReason(concerts, query, context)
   return query.grouping === 'date'
     ? { grouping: 'date', source, days: groupByDate(bands), span, empty }
     : { grouping: 'band', source, bands, span, empty }
-}
-
-/** First and last date among the shown concerts. */
-function dateSpan(shown: readonly Concert[]): DateSpan | null {
-  const dates = shown.map((concert) => concert.date).sort()
-  const firstDate = dates[0]
-  const lastDate = dates.at(-1)
-  return firstDate && lastDate ? { firstDate, lastDate } : null
 }
 
 /**
@@ -56,13 +48,19 @@ function bandsToShow(
   return { source: 'popular', bands: popularBands(candidates) }
 }
 
+/**
+ * Why nothing is shown. Filters are the cause unless the bands in question (the
+ * visitor's own, or with none chosen, every band) have no upcoming dates at all.
+ */
 function emptyReason(
   concerts: readonly Concert[],
   query: BrowseQuery,
-  shown: readonly Concert[],
-): EmptyReason | null {
-  if (!concerts.some((concert) => query.bandIds.includes(concert.band.id))) return 'no-bands'
-  return shown.length === 0 ? 'filters-too-narrow' : null
+  { today }: BrowseContext,
+): EmptyReason {
+  const inQuestion = (concert: Concert) =>
+    query.bandIds.length === 0 || query.bandIds.includes(concert.band.id)
+  const hasUpcoming = concerts.some((concert) => inQuestion(concert) && concert.date >= today)
+  return hasUpcoming ? 'filters-too-narrow' : 'no-bands'
 }
 
 /** The query's bands that appear in the data and pass the genre filter. */

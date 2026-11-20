@@ -1,3 +1,5 @@
+import type { IsoDate } from './iso-date.ts'
+
 /** A city concerts take place in. "Near you" means in the selected city. */
 export interface City {
   id: string
@@ -37,8 +39,18 @@ export interface Concert {
   id: string
   band: Band
   venue: Venue
-  /** Calendar date of the show, `YYYY-MM-DD`. Sorts as a string. */
-  date: string
+  /** Calendar date of the show. */
+  date: IsoDate
   tickets: TicketState
   fans: FanSignal
+}
+
+/** A venue as listed on its own, e.g. "Big Hall, Stockholm". */
+export function venueLabel(venue: Venue): string {
+  return `${venue.name}, ${venue.city.name}`
+}
+
+/** Orders concerts soonest first; same-day concerts by id, so the order is stable. */
+export function bySoonest(a: Concert, b: Concert): number {
+  return a.date < b.date ? -1 : a.date > b.date ? 1 : a.id < b.id ? -1 : a.id > b.id ? 1 : 0
 }
