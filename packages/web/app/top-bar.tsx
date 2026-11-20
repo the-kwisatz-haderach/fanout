@@ -1,12 +1,22 @@
 import Link from "next/link";
+import type { SearchCatalog } from "@fanout/shared";
 import { CitySelect } from "./_browse/city-select";
 import { DateRangeSelect } from "./_browse/date-range-select";
+import { TopSearch } from "./_browse/top-search";
+import { SAMPLE_BAND_SPECS, SAMPLE_GENRES, SAMPLE_VENUES } from "@/sample-data";
+
+/** Everything the top-bar search looks through. */
+const SEARCH_CATALOG: SearchCatalog = {
+  bands: SAMPLE_BAND_SPECS.map((spec) => spec.band),
+  genres: Object.values(SAMPLE_GENRES),
+  venues: SAMPLE_VENUES,
+};
 
 const control =
   "h-10 border border-bone/40 bg-ink px-3 text-bone focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-process";
 
 /**
- * Logo, search, city and date-range selects, sign-in. Search and sign-in not wired up yet.
+ * Logo, search, city and date-range selects, sign-in. Sign-in not wired up yet.
  * On phones it stacks: logo and sign-in, then the selects, then search.
  */
 export function TopBar() {
@@ -19,18 +29,7 @@ export function TopBar() {
         Fanout
       </Link>
 
-      <form role="search" className="order-last w-full md:order-none md:w-auto md:flex-1 md:max-w-md">
-        <label htmlFor="search" className="sr-only">
-          Search bands, genres or venues
-        </label>
-        <input
-          id="search"
-          name="q"
-          type="search"
-          placeholder="Search bands, genres or venues"
-          className={`${control} w-full placeholder:text-bone/60`}
-        />
-      </form>
+      <TopSearch catalog={SEARCH_CATALOG} className={control} />
 
       {/* On phones: a row of its own under logo and sign-in, the two selects sharing it. */}
       <div className="order-1 flex w-full gap-3 *:flex-1 md:order-none md:w-auto md:gap-4 md:*:flex-none">

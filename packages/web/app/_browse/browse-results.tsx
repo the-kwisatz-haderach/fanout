@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import { SAMPLE_BAND_SPECS, SAMPLE_GENRES, sampleConcerts } from "@/sample-data";
+import { SAMPLE_BAND_SPECS, SAMPLE_GENRES, SAMPLE_VENUES, sampleConcerts } from "@/sample-data";
 import { BrowseClient } from "./browse-client";
 
 /** Every band the visitor can search for and add. */
@@ -18,6 +18,7 @@ export async function BrowseResults() {
       concerts={sampleConcerts(today)}
       bands={ALL_BANDS}
       genres={Object.values(SAMPLE_GENRES)}
+      venues={SAMPLE_VENUES}
       today={today}
     />
   );

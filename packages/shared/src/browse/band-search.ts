@@ -6,13 +6,18 @@ import type { Band } from '../concert.ts'
  * each tier by name. Blank text finds nothing.
  */
 export function searchBands(bands: readonly Band[], text: string): Band[] {
+  return searchByName(bands, text)
+}
+
+/** `searchBands` for anything with a name: genres, venues, ... Same matching and order. */
+export function searchByName<T extends { name: string }>(items: readonly T[], text: string): T[] {
   const needle = fold(text.trim())
   if (needle === '') return []
-  return bands
-    .map((band) => ({ band, rank: matchRank(fold(band.name), needle) }))
-    .filter((match): match is { band: Band; rank: number } => match.rank !== null)
-    .sort((a, b) => a.rank - b.rank || a.band.name.localeCompare(b.band.name))
-    .map((match) => match.band)
+  return items
+    .map((item) => ({ item, rank: matchRank(fold(item.name), needle) }))
+    .filter((match): match is { item: T; rank: number } => match.rank !== null)
+    .sort((a, b) => a.rank - b.rank || a.item.name.localeCompare(b.item.name))
+    .map((match) => match.item)
 }
 
 function matchRank(name: string, needle: string): number | null {

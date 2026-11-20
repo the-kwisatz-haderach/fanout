@@ -49,6 +49,7 @@ export function useBrowseQuery(defaults: BrowseQuery) {
     setNearMeOnly: (nearMeOnly: boolean) => setQuery((q) => ({ ...q, nearMeOnly })),
     setFansLikeMeOnly: (fansLikeMeOnly: boolean) => setQuery((q) => ({ ...q, fansLikeMeOnly })),
     setGrouping: (grouping: Grouping) => setQuery((q) => ({ ...q, grouping })),
+    setVenueId: (venueId: string | null) => setQuery((q) => ({ ...q, venueId })),
     clearFilters: () => {
       setState((q) => clearFilters(q, defaults));
       savedFilters.write(null);

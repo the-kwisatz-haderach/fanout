@@ -31,9 +31,14 @@ export function BrowseLayout({
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetRef = useRef<HTMLDialogElement>(null);
   const barRef = useRef<HTMLButtonElement>(null);
+  const sheetBodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (sheetOpen) sheetRef.current?.showModal();
+    if (!sheetOpen) return;
+    sheetRef.current?.showModal();
+    // Each opening starts at the top, not where the last one was scrolled to (only
+    // possible once the dialog is shown).
+    sheetBodyRef.current?.scrollTo(0, 0);
   }, [sheetOpen]);
 
   // If the screen grows to desktop while the sheet is open, the side panel takes over.
@@ -105,7 +110,10 @@ export function BrowseLayout({
             </span>
           </button>
         </div>
-        <div className="flex-1 space-y-8 overflow-y-auto overscroll-contain p-6">
+        <div
+          ref={sheetBodyRef}
+          className="flex-1 space-y-8 overflow-y-auto overscroll-contain p-6"
+        >
           {sheetOpen && panel}
         </div>
         <div className="border-t-2 border-ink p-4">
