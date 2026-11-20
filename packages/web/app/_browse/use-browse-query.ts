@@ -1,39 +1,36 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState } from "react";
-import type { BrowseQuery, DateRangeId } from "@fanout/shared";
+import { createContext, useContext, useState } from "react";
+import { clearFilters, type BrowseQuery, type DateRangeId } from "@fanout/shared";
 
-/** The visitor's browse query and one setter per field. */
-export interface BrowseQueryState {
-  query: BrowseQuery;
-  setCityId: (cityId: string | null) => void;
-  setDateRangeId: (dateRangeId: DateRangeId) => void;
-  setNearMeOnly: (nearMeOnly: boolean) => void;
+/**
+ * The visitor's BrowseQuery as client state: one setter per field, plus
+ * `clearFilters`, which puts every filter back to `defaults` but keeps the bands.
+ * Called once, by `BrowseQueryProvider`; components read it with `useBrowseQueryContext`.
+ */
+export function useBrowseQuery(defaults: BrowseQuery) {
+  const [query, setQuery] = useState(defaults);
+
+  return {
+    query,
+    setGenreIds: (genreIds: string[]) => setQuery((q) => ({ ...q, genreIds })),
+    setCityId: (cityId: string | null) => setQuery((q) => ({ ...q, cityId })),
+    setDateRangeId: (dateRangeId: DateRangeId) => setQuery((q) => ({ ...q, dateRangeId })),
+    setNearMeOnly: (nearMeOnly: boolean) => setQuery((q) => ({ ...q, nearMeOnly })),
+    clearFilters: () => setQuery((q) => clearFilters(q, defaults)),
+  };
 }
+
+export type BrowseQueryState = ReturnType<typeof useBrowseQuery>;
 
 export const BrowseQueryContext = createContext<BrowseQueryState | null>(null);
 
-/** Holds the query for `BrowseQueryProvider`. */
-export function useBrowseQueryState(initialQuery: BrowseQuery): BrowseQueryState {
-  const [query, setQuery] = useState(initialQuery);
-
-  return useMemo(() => {
-    const set =
-      <K extends keyof BrowseQuery>(key: K) =>
-      (value: BrowseQuery[K]) =>
-        setQuery((current) => ({ ...current, [key]: value }));
-    return {
-      query,
-      setCityId: set("cityId"),
-      setDateRangeId: set("dateRangeId"),
-      setNearMeOnly: set("nearMeOnly"),
-    };
-  }, [query]);
-}
-
-/** The page's browse query, shared by the top bar, the filter panel and the results. */
-export function useBrowseQuery(): BrowseQueryState {
+/**
+ * The page's one browse query, shared by the top bar (city, date range), the filter
+ * panel and the results.
+ */
+export function useBrowseQueryContext(): BrowseQueryState {
   const state = useContext(BrowseQueryContext);
-  if (state === null) throw new Error("useBrowseQuery outside BrowseQueryProvider");
+  if (state === null) throw new Error("useBrowseQueryContext outside BrowseQueryProvider");
   return state;
 }

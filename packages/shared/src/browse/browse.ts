@@ -1,9 +1,9 @@
 import type { Band, Concert } from '../concert.ts'
-import { matchesQuery } from './filters.ts'
+import { isInChosenGenres, matchesQuery } from './filters.ts'
 import { groupByBand } from './group-by-band.ts'
 import { keepNearMe } from './near-me.ts'
 import type { BrowseContext, BrowseQuery } from './query.ts'
-import type { BrowseResult } from './result.ts'
+import type { BrowseResult, EmptyReason } from './result.ts'
 
 /**
  * The page's only source of browse behaviour: takes every concert and the visitor's
@@ -17,11 +17,26 @@ export function browse(
 ): BrowseResult {
   const inView = concerts.filter((concert) => matchesQuery(concert, query, context))
   const shown = keepNearMe(inView, query)
-  return { grouping: 'band', bands: groupByBand(followedBands(concerts, query), shown, query) }
+  return {
+    grouping: 'band',
+    bands: groupByBand(followedBands(concerts, query), shown, query),
+    empty: emptyReason(concerts, query, shown),
+  }
 }
 
-/** The query's bands that appear in the data, in the visitor's order. */
+function emptyReason(
+  concerts: readonly Concert[],
+  query: BrowseQuery,
+  shown: readonly Concert[],
+): EmptyReason | null {
+  if (!concerts.some((concert) => query.bandIds.includes(concert.band.id))) return 'no-bands'
+  return shown.length === 0 ? 'filters-too-narrow' : null
+}
+
+/** The query's bands that appear in the data and pass the genre filter, in the visitor's order. */
 function followedBands(concerts: readonly Concert[], query: BrowseQuery): Band[] {
   const known = new Map(concerts.map((concert) => [concert.band.id, concert.band]))
-  return query.bandIds.flatMap((id) => known.get(id) ?? [])
+  return query.bandIds
+    .flatMap((id) => known.get(id) ?? [])
+    .filter((band) => isInChosenGenres(band, query))
 }

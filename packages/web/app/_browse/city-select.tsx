@@ -1,11 +1,11 @@
 "use client";
 
 import { CITY_OPTIONS } from "./cities";
-import { useBrowseQuery } from "./use-browse-query";
+import { useBrowseQueryContext } from "./use-browse-query";
 
 /** Where "near you" is: dates in this city stand out. */
 export function CitySelect({ className }: { className: string }) {
-  const { query, setCityId } = useBrowseQuery();
+  const { query, setCityId } = useBrowseQueryContext();
 
   return (
     <label className="flex items-center gap-2">

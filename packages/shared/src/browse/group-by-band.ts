@@ -1,6 +1,7 @@
 import type { Band, Concert } from '../concert.ts'
 import { hasNoDatesNear, isNear } from './near-me.ts'
 import type { BrowseQuery } from './query.ts'
+import { ticketNote } from './ticket-note.ts'
 import type { BandGroup, DateEntry, TourSummary } from './result.ts'
 
 /**
@@ -16,7 +17,11 @@ export function groupByBand(
     const dates: DateEntry[] = concerts
       .filter((concert) => concert.band.id === band.id)
       .sort(byDate)
-      .map((concert) => ({ concert, near: isNear(concert, query) }))
+      .map((concert) => ({
+        concert,
+        near: isNear(concert, query),
+        ticketNote: ticketNote(concert.tickets),
+      }))
     return { band, summary: summarise(dates), dates, noDatesNear: hasNoDatesNear(dates, query) }
   })
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { DateEntry } from "@fanout/shared";
 import { dateParts, fullDate } from "./format";
 import { nearDateClass, NearYouLabel } from "./near-you";
+import { TicketNoteLabel, ticketNoteClass } from "./ticket-note";
 
 /** One tour date: date and city, plus the venue when near you, linking to its concert. */
 export function DateRow({ entry }: { entry: DateEntry }) {
@@ -18,10 +19,11 @@ export function DateRow({ entry }: { entry: DateEntry }) {
         <time
           dateTime={concert.date}
           title={fullDate(concert.date)}
-          className={`font-display leading-none font-extrabold whitespace-nowrap uppercase ${nearDateClass(entry.near)}`}
+          className={`font-display leading-none font-extrabold whitespace-nowrap uppercase ${nearDateClass(entry.near)} ${ticketNoteClass(entry.ticketNote)}`}
         >
           {day} {month}
         </time>
+        <TicketNoteLabel note={entry.ticketNote} />
         <span className={`min-w-0 break-words ${entry.near ? "" : "text-bone/60"}`}>
           <span className="block font-semibold uppercase tracking-wide group-hover:underline">
             {concert.venue.city.name}

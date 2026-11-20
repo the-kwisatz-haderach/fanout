@@ -1,11 +1,11 @@
 "use client";
 
 import { DATE_RANGES, type DateRangeId } from "@fanout/shared";
-import { useBrowseQuery } from "./use-browse-query";
+import { useBrowseQueryContext } from "./use-browse-query";
 
 /** The window of upcoming dates to show. */
 export function DateRangeSelect({ className }: { className: string }) {
-  const { query, setDateRangeId } = useBrowseQuery();
+  const { query, setDateRangeId } = useBrowseQueryContext();
 
   return (
     <label className="flex items-center gap-2">
