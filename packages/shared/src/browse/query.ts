@@ -22,6 +22,8 @@ export interface BrowseQuery {
   fansLikeMeOnly: boolean
   /** Columns by band, or day headings by date. */
   grouping: Grouping
+  /** Only show dates at this venue (chosen from the top-bar search). `null` is any venue. */
+  venueId: string | null
 }
 
 export const DEFAULT_BROWSE_QUERY: BrowseQuery = {
@@ -32,6 +34,7 @@ export const DEFAULT_BROWSE_QUERY: BrowseQuery = {
   nearMeOnly: false,
   fansLikeMeOnly: false,
   grouping: 'band',
+  venueId: null,
 }
 
 /** Facts about the moment of browsing that aren't the visitor's choice. */

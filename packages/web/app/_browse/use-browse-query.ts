@@ -28,6 +28,7 @@ export function useBrowseQuery(defaults: BrowseQuery) {
     setDateRangeId: (dateRangeId: DateRangeId) => setQuery((q) => ({ ...q, dateRangeId })),
     setNearMeOnly: (nearMeOnly: boolean) => setQuery((q) => ({ ...q, nearMeOnly })),
     setGrouping: (grouping: Grouping) => setQuery((q) => ({ ...q, grouping })),
+    setVenueId: (venueId: string | null) => setQuery((q) => ({ ...q, venueId })),
     clearFilters: () => setQuery((q) => clearFilters(q, defaults)),
   };
 }

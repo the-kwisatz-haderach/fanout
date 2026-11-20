@@ -27,8 +27,12 @@ const isInDateRange: ConcertFilter = (concert, query, { today }) => {
   return concert.date >= today && (range === undefined || concert.date < addDays(today, range.days))
 }
 
+/** At the chosen venue; no chosen venue means every venue. */
+const isAtVenue: ConcertFilter = (concert, query) =>
+  query.venueId === null || concert.venue.id === query.venueId
+
 /** Every filter a concert must pass to be shown. Add one entry per filter. */
-const FILTERS: readonly ConcertFilter[] = [isFollowedBand, isInGenres, isInDateRange]
+const FILTERS: readonly ConcertFilter[] = [isFollowedBand, isInGenres, isInDateRange, isAtVenue]
 
 export function matchesQuery(
   concert: Concert,

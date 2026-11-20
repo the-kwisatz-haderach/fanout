@@ -5,6 +5,8 @@ export type { Band, City, Concert, FanSignal, Genre, TicketState, Venue } from '
 
 export { browse } from './browse/browse.ts'
 export { searchBands } from './browse/band-search.ts'
+export { topSearch } from './browse/top-search.ts'
+export type { SearchCatalog, TopSearchResult } from './browse/top-search.ts'
 export { clearFilters } from './browse/clear-filters.ts'
 export { DEFAULT_BROWSE_QUERY } from './browse/query.ts'
 export type { BrowseContext, BrowseQuery, Grouping } from './browse/query.ts'

@@ -1,7 +1,14 @@
 "use client";
 
 import { useMemo, useRef } from "react";
-import { browse, type Band, type BrowseResult, type Concert, type Genre } from "@fanout/shared";
+import {
+  browse,
+  type Band,
+  type BrowseResult,
+  type Concert,
+  type Genre,
+  type Venue,
+} from "@fanout/shared";
 import { BandColumns } from "./band-columns";
 import { BrowseLayout } from "./browse-layout";
 import { cityName } from "./cities";
@@ -11,6 +18,7 @@ import { EmptyResult } from "./empty-result";
 import { GroupingControl } from "./grouping-control";
 import { GenreFilter } from "./panel/genre-filter";
 import { NearMeToggle } from "./panel/near-me-toggle";
+import { VenueFilter } from "./panel/venue-filter";
 import { YourBands } from "./panel/your-bands";
 import { PopularHeading } from "./popular-heading";
 import { ResultsPlaceholder } from "./results-placeholder";
@@ -25,16 +33,20 @@ export function BrowseClient({
   concerts,
   bands,
   genres,
+  venues,
   today,
 }: {
   concerts: readonly Concert[];
   bands: readonly Band[];
   genres: readonly Genre[];
+  /** Every venue, to name the one chosen from the top-bar search. */
+  venues: readonly Venue[];
   /** `YYYY-MM-DD`, from the server, so date ranges count from the same day. */
   today: string;
 }) {
   const { query, bandsReady, setBandIds, setGenreIds, setNearMeOnly, setGrouping, clearFilters } =
     useBrowseQueryContext();
+  const { setVenueId } = useBrowseQueryContext();
   const result = useMemo(() => browse(concerts, query, { today }), [concerts, query, today]);
   const resultsRef = useRef<HTMLDivElement>(null);
   const inView = useDatesInView(resultsRef, result);
@@ -48,6 +60,7 @@ export function BrowseClient({
             chosenIds={bandsReady ? query.bandIds : null}
             onChange={setBandIds}
           />
+          <VenueFilter venues={venues} venueId={query.venueId} onClear={() => setVenueId(null)} />
           <GenreFilter genres={genres} selected={query.genreIds} onChange={setGenreIds} />
           <NearMeToggle
             checked={query.nearMeOnly}
