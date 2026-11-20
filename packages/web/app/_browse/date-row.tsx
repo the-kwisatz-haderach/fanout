@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { DateEntry } from "@fanout/shared";
 import { RowLead, type RowLeadKind } from "./row-lead";
+import { TicketNoteLabel, ticketNoteClass } from "./ticket-note";
 
 /**
  * One tour date: date (or band, when grouped by date), city and venue, linking to its
@@ -16,7 +17,8 @@ export function DateRow({ entry, lead = "date" }: { entry: DateEntry; lead?: Row
         prefetch={false}
         className="group grid grid-cols-[7rem_1fr] items-baseline gap-x-3 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-process"
       >
-        <RowLead kind={lead} concert={concert} />
+        <RowLead kind={lead} concert={concert} className={ticketNoteClass(entry.ticketNote)} />
+        <TicketNoteLabel note={entry.ticketNote} />
         <span className="min-w-0 break-words">
           <span className="block font-semibold uppercase tracking-wide group-hover:underline">
             {concert.venue.city.name}
