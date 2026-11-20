@@ -1,0 +1,7 @@
+import type { City } from "@fanout/shared";
+import { SAMPLE_CITIES } from "@/sample-data";
+
+/** Cities the visitor can choose, by name. */
+export const CITY_OPTIONS: readonly City[] = [...Object.values(SAMPLE_CITIES)].sort((a, b) =>
+  a.name.localeCompare(b.name, "en"),
+);
