@@ -27,7 +27,14 @@ export interface TourSummary {
 /** Render-ready output of `browse()`. Discriminated by grouping. */
 export type BrowseResult = BandGroupedResult
 
+/**
+ * Where the shown bands come from: the visitor's own (`'yours'`), or popular bands
+ * standing in because they haven't chosen any yet (`'popular'`).
+ */
+export type BandSource = 'yours' | 'popular'
+
 export interface BandGroupedResult {
   grouping: 'band'
+  source: BandSource
   bands: BandGroup[]
 }
