@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [{ source: "/api/:path*", destination: `${apiUrl}/:path*` }];
   },
+  // Workspace packages ship TypeScript source; Next compiles them.
+  transpilePackages: ["@fanout/shared"],
   experimental: {
     agentFeedback: true,
   },

@@ -2,11 +2,24 @@
   "name": "@fanout/shared",
   "version": "1.0.0",
   "private": true,
-  "description": "",
-  "main": "index.js",
-  "scripts": {},
-  "keywords": [],
-  "author": "",
+  "description": "Types, schemas and pure logic shared by web and api.",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@fanout/eslint-config": "catalog:",
+    "@fanout/typescript-config": "catalog:",
+    "@typescript/native": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:"
+  }
 }
