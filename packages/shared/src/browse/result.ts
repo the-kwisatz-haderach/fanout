@@ -30,4 +30,12 @@ export type BrowseResult = BandGroupedResult
 export interface BandGroupedResult {
   grouping: 'band'
   bands: BandGroup[]
+  /** Why nothing is shown, or `null` when there are dates to show. */
+  empty: EmptyReason | null
 }
+
+/**
+ * Why a result has no dates: the visitor hasn't chosen any bands yet, or their
+ * filters exclude every date of the bands they chose.
+ */
+export type EmptyReason = 'no-bands' | 'filters-too-narrow'
