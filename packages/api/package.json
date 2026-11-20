@@ -27,11 +27,12 @@
     }
   },
   "devDependencies": {
+    "@fanout/eslint-config": "catalog:",
     "@fanout/typescript-config": "catalog:",
     "@types/node": "catalog:",
-    "typescript": "catalog:",
+    "@typescript/native": "catalog:",
     "eslint": "catalog:",
-    "@fanout/eslint-config": "catalog:",
-    "@typescript/native": "catalog:"
+    "pino-pretty": "^13.2.0",
+    "typescript": "catalog:"
   }
 }
