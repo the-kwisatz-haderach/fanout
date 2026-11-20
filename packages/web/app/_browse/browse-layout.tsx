@@ -65,7 +65,7 @@ export function BrowseLayout({
           <span className="font-display text-2xl leading-none font-extrabold tracking-wide uppercase">
             Filters
           </span>
-          <span className="min-w-0 flex-1 truncate text-sm font-semibold">
+          <span className="min-w-0 flex-1 text-sm leading-snug font-semibold text-pretty">
             {summary ? (
               <>
                 <span className="sr-only">: </span>
