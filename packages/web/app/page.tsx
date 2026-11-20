@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { BrowseResults } from "./_browse/browse-results";
+import { DateRangeBar } from "./_browse/date-range-bar";
 import { ResultsPlaceholder } from "./_browse/results-placeholder";
 import { TopBar } from "./top-bar";
 
@@ -19,7 +20,14 @@ export default function Home() {
               : all bands, venues and counts are fictional
             </span>
           </p>
-          <Suspense fallback={<ResultsPlaceholder />}>
+          <Suspense
+            fallback={
+              <>
+                <DateRangeBar span={undefined} />
+                <ResultsPlaceholder />
+              </>
+            }
+          >
             <BrowseResults />
           </Suspense>
         </main>

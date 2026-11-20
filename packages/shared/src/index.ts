@@ -11,5 +11,8 @@ export type {
   BandGroupedResult,
   BrowseResult,
   DateEntry,
+  DateGroupedResult,
+  DateSpan,
+  DayGroup,
   TourSummary,
 } from './browse/result.ts'
