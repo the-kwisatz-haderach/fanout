@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
-import { clearFilters, type BrowseQuery, type DateRangeId } from "@fanout/shared";
+import { clearFilters, type BrowseQuery, type DateRangeId, type Grouping } from "@fanout/shared";
 
 /**
  * The visitor's BrowseQuery as client state: one setter per field, plus
@@ -17,6 +17,7 @@ export function useBrowseQuery(defaults: BrowseQuery) {
     setCityId: (cityId: string | null) => setQuery((q) => ({ ...q, cityId })),
     setDateRangeId: (dateRangeId: DateRangeId) => setQuery((q) => ({ ...q, dateRangeId })),
     setNearMeOnly: (nearMeOnly: boolean) => setQuery((q) => ({ ...q, nearMeOnly })),
+    setGrouping: (grouping: Grouping) => setQuery((q) => ({ ...q, grouping })),
     clearFilters: () => setQuery((q) => clearFilters(q, defaults)),
   };
 }

@@ -4,9 +4,9 @@
  * always said in words, never by colour alone.
  */
 
-/** Classes for a date's large type: pink when near you, quieter otherwise. */
-export function nearDateClass(near: boolean): string {
-  return near ? "text-3xl text-pink" : "text-2xl text-bone/60";
+/** Colour for a row's large lead type: pink when near you, quieter otherwise. */
+export function nearLeadClass(near: boolean): string {
+  return near ? "text-pink" : "text-bone/60";
 }
 
 /** Small "Near you" label: bone text after a pink marker. */
