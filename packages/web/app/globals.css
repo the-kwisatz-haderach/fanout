@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Tour Shirt, Multi-Ink. The only colours and faces the page uses.
+ * - ink: washed-black background
+ * - bone: text on ink
+ * - process: process-yellow filter panel and fans-going tag (black text)
+ * - pink: dates near you; large type only on ink (about 4.4:1)
+ */
+@theme {
+  --color-ink: #1c1c1e;
+  --color-bone: #f1efea;
+  --color-process: #ffd400;
+  --color-pink: #ff0b62;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-barlow), Arial, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: dark;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
