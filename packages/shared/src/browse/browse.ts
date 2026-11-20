@@ -4,6 +4,7 @@ import { groupByBand } from './group-by-band.ts'
 import { groupByDate } from './group-by-date.ts'
 import { keepNearMe } from './near-me.ts'
 import { popularBands } from './popular-bands.ts'
+import { rankBands } from './rank-bands.ts'
 import type { BrowseContext, BrowseQuery } from './query.ts'
 import type { BandSource, BrowseResult, DateSpan, EmptyReason } from './result.ts'
 
@@ -21,7 +22,7 @@ export function browse(
   const shownQuery = { ...query, bandIds: shownBands.map((band) => band.id) }
   const inView = concerts.filter((concert) => matchesQuery(concert, shownQuery, context))
   const shown = keepNearMe(inView, shownQuery)
-  const bands = groupByBand(shownBands, shown, shownQuery)
+  const bands = rankBands(groupByBand(shownBands, shown, shownQuery))
   const span = dateSpan(shown)
   // The visitor's own bands decide "no bands" vs "filters too narrow", even if filters hid them.
   const empty = emptyReason(concerts, source === 'yours' ? query : shownQuery, shown)
@@ -64,7 +65,7 @@ function emptyReason(
   return shown.length === 0 ? 'filters-too-narrow' : null
 }
 
-/** The query's bands that appear in the data and pass the genre filter, in the visitor's order. */
+/** The query's bands that appear in the data and pass the genre filter. */
 function followedBands(concerts: readonly Concert[], query: BrowseQuery): Band[] {
   const known = new Map(concerts.map((concert) => [concert.band.id, concert.band]))
   return query.bandIds

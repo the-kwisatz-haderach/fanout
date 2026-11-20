@@ -27,8 +27,17 @@ const isInDateRange: ConcertFilter = (concert, query, { today }) => {
   return concert.date >= today && (range === undefined || concert.date < addDays(today, range.days))
 }
 
+/** With "only shows with fans like me" on, dates where a going fan shares your bands. */
+const hasFansLikeMe: ConcertFilter = (concert, query) =>
+  !query.fansLikeMeOnly || concert.fans.sharesYourBands > 0
+
 /** Every filter a concert must pass to be shown. Add one entry per filter. */
-const FILTERS: readonly ConcertFilter[] = [isFollowedBand, isInGenres, isInDateRange]
+const FILTERS: readonly ConcertFilter[] = [
+  isFollowedBand,
+  isInGenres,
+  isInDateRange,
+  hasFansLikeMe,
+]
 
 export function matchesQuery(
   concert: Concert,
