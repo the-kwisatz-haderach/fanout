@@ -1,13 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import type { BrowseQuery, Grouping } from "@fanout/shared";
+import { clearFilters, type BrowseQuery, type Grouping } from "@fanout/shared";
 
-/** The visitor's browse query, with one setter per field. */
-export function useBrowseQuery(initial: BrowseQuery) {
-  const [query, setQuery] = useState(initial);
+/**
+ * The visitor's BrowseQuery as client state: one setter per field, plus
+ * `clearFilters`, which puts every filter back to `defaults` but keeps the bands.
+ */
+export function useBrowseQuery(defaults: BrowseQuery) {
+  const [query, setQuery] = useState(defaults);
 
-  const setGrouping = (grouping: Grouping) => setQuery((q) => ({ ...q, grouping }));
-
-  return { query, setGrouping };
+  return {
+    query,
+    setGenreIds: (genreIds: string[]) => setQuery((q) => ({ ...q, genreIds })),
+    setGrouping: (grouping: Grouping) => setQuery((q) => ({ ...q, grouping })),
+    clearFilters: () => setQuery((q) => clearFilters(q, defaults)),
+  };
 }

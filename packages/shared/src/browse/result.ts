@@ -35,6 +35,8 @@ export interface BandGroupedResult {
   bands: BandGroup[]
   /** First and last shown date, or `null` when nothing is shown. */
   span: DateSpan | null
+  /** Why nothing is shown, or `null` when there are dates to show. */
+  empty: EmptyReason | null
 }
 
 /** The same shown dates as by band, under day headings in date order. */
@@ -43,6 +45,8 @@ export interface DateGroupedResult {
   days: DayGroup[]
   /** First and last shown date, or `null` when nothing is shown. */
   span: DateSpan | null
+  /** Why nothing is shown, or `null` when there are dates to show. */
+  empty: EmptyReason | null
 }
 
 /** One day heading and its dates, in the by-band result's band order. */
@@ -57,3 +61,9 @@ export interface DateSpan {
   firstDate: string
   lastDate: string
 }
+
+/**
+ * Why a result has no dates: the visitor hasn't chosen any bands yet, or their
+ * filters exclude every date of the bands they chose.
+ */
+export type EmptyReason = 'no-bands' | 'filters-too-narrow'
