@@ -6,6 +6,7 @@ const schema = z.object({
     .default('development'),
   PORT: z.coerce.number().int().positive().default(8000),
   HOST: z.string().default('localhost'),
+  DATABASE_URL: z.string(),
 })
 
 const result = schema.safeParse(process.env)
