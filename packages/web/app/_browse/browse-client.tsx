@@ -8,6 +8,7 @@ import { cityName } from "./cities";
 import { DateRangeBar } from "./date-range-bar";
 import { DayColumns } from "./day-columns";
 import { EmptyResult } from "./empty-result";
+import { filterSummary } from "./filter-summary";
 import { GroupingControl } from "./grouping-control";
 import { GenreFilter } from "./panel/genre-filter";
 import { FansLikeMeToggle } from "./panel/fans-like-me-toggle";
@@ -50,6 +51,7 @@ export function BrowseClient({
 
   return (
     <BrowseLayout
+      summary={bandsReady ? filterSummary(query, genres) : undefined}
       panel={
         <>
           <YourBands
