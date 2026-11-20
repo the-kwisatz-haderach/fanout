@@ -1,13 +1,14 @@
-import Fastify from 'fastify'
 import { env } from './env.ts'
+import { app } from './app.ts'
 
-const fastify = Fastify({
-  logger: true,
+const fastify = app({
+  logger: {
+    level: 'info',
+    transport: {
+      target: 'pino-pretty',
+    },
+  },
   trustProxy: true,
-})
-
-fastify.get('/', function (request, reply) {
-  reply.send({ hello: 'world' })
 })
 
 fastify.listen(
