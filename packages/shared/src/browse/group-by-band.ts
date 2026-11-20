@@ -1,4 +1,5 @@
 import type { Band, Concert } from '../concert.ts'
+import { ticketNote } from './ticket-note.ts'
 import type { BandGroup, DateEntry, TourSummary } from './result.ts'
 
 /**
@@ -10,7 +11,7 @@ export function groupByBand(bands: readonly Band[], concerts: readonly Concert[]
     const dates: DateEntry[] = concerts
       .filter((concert) => concert.band.id === band.id)
       .sort(byDate)
-      .map((concert) => ({ concert }))
+      .map((concert) => ({ concert, ticketNote: ticketNote(concert.tickets) }))
     return { band, summary: summarise(dates), dates }
   })
 }

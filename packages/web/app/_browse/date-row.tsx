@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { DateEntry } from "@fanout/shared";
 import { dateParts, fullDate } from "./format";
+import { TicketNoteLabel, ticketNoteClass } from "./ticket-note";
 
 /** One tour date: date, city and venue, linking to its concert. */
 export function DateRow({ entry }: { entry: DateEntry }) {
@@ -17,10 +18,11 @@ export function DateRow({ entry }: { entry: DateEntry }) {
         <time
           dateTime={concert.date}
           title={fullDate(concert.date)}
-          className="font-display text-2xl leading-none font-extrabold whitespace-nowrap uppercase"
+          className={`font-display text-2xl leading-none font-extrabold whitespace-nowrap uppercase ${ticketNoteClass(entry.ticketNote)}`}
         >
           {day} {month}
         </time>
+        <TicketNoteLabel note={entry.ticketNote} />
         <span className="min-w-0 break-words">
           <span className="block font-semibold uppercase tracking-wide group-hover:underline">
             {concert.venue.city.name}
