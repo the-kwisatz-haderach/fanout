@@ -4,7 +4,7 @@ const schema = z.object({
   NODE_ENV: z
     .enum(['development', 'test', 'production'])
     .default('development'),
-  PORT: z.coerce.number().int().positive().default(80),
+  PORT: z.coerce.number().int().positive().default(8000),
   HOST: z.string().default('localhost'),
 })
 
