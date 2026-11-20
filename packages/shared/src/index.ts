@@ -21,3 +21,5 @@ export type {
   TourSummary,
 } from './browse/result.ts'
 export type { TicketNote } from './browse/ticket-note.ts'
+
+export { toggleMarkedShow } from './marked-shows.ts'

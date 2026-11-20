@@ -85,3 +85,6 @@ const isStringArray = (stored: unknown): string[] | null =>
 
 /** The visitor's chosen band ids, in the order they added them. */
 export const savedBandIds = deviceValue<string[]>("fanout:band-ids", [], isStringArray);
+
+/** Concert ids of the shows the visitor has marked, in the order they marked them. */
+export const savedMarkedShowIds = deviceValue<string[]>("fanout:marked-show-ids", [], isStringArray);
