@@ -27,6 +27,7 @@ export function useBrowseQuery(defaults: BrowseQuery) {
     setCityId: (cityId: string | null) => setQuery((q) => ({ ...q, cityId })),
     setDateRangeId: (dateRangeId: DateRangeId) => setQuery((q) => ({ ...q, dateRangeId })),
     setNearMeOnly: (nearMeOnly: boolean) => setQuery((q) => ({ ...q, nearMeOnly })),
+    setFansLikeMeOnly: (fansLikeMeOnly: boolean) => setQuery((q) => ({ ...q, fansLikeMeOnly })),
     setGrouping: (grouping: Grouping) => setQuery((q) => ({ ...q, grouping })),
     clearFilters: () => setQuery((q) => clearFilters(q, defaults)),
   };

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { DateEntry } from "@fanout/shared";
+import { FansTag } from "./fans-tag";
 import { MarkToggle } from "./mark-toggle";
 import { nearLeadClass, NearYouLabel } from "./near-you";
 import { RowLead, type RowLeadKind } from "./row-lead";
@@ -34,6 +35,7 @@ export function DateRow({ entry, lead = "date" }: { entry: DateEntry; lead?: Row
             <>
               <span className="block text-sm text-bone/70">{concert.venue.name}</span>
               <NearYouLabel />
+              <FansTag tag={entry.fansTag} />
             </>
           )}
         </span>
