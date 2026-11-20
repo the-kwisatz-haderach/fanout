@@ -1,4 +1,4 @@
-import type { Venue } from "@fanout/shared";
+import { findById, venueLabel, type Venue } from "@fanout/shared";
 
 /**
  * The venue chosen from the top-bar search, as a removable chip. Renders nothing
@@ -13,7 +13,7 @@ export function VenueFilter({
   venueId: string | null;
   onClear: () => void;
 }) {
-  const venue = venues.find((v) => v.id === venueId);
+  const venue = findById(venues, venueId);
   if (!venue) return null;
 
   return (
@@ -28,12 +28,10 @@ export function VenueFilter({
       <button
         type="button"
         onClick={onClear}
-        aria-label={`Remove venue filter: ${venue.name}, ${venue.city.name}`}
+        aria-label={`Remove venue filter: ${venueLabel(venue)}`}
         className="mt-2 flex max-w-full items-baseline gap-2 bg-ink px-2 py-1 text-left font-display text-lg leading-tight font-semibold text-process uppercase hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
       >
-        <span className="min-w-0 break-words">
-          {venue.name}, {venue.city.name}
-        </span>
+        <span className="min-w-0 break-words">{venueLabel(venue)}</span>
         <span aria-hidden className="font-sans text-base">
           ×
         </span>

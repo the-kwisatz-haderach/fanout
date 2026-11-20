@@ -1,15 +1,27 @@
 import type { Band } from '../concert.ts'
 
+/** Most bands the "Add a band" search lists at once. */
+export const BAND_MATCH_LIMIT = 8
+
 /**
- * Bands whose name contains the search text, ignoring case and accents. Names that
+ * Bands the visitor could add for the search text: matched like `searchByName`,
+ * leaving out bands already chosen, at most `BAND_MATCH_LIMIT`.
+ */
+export function searchBands(
+  bands: readonly Band[],
+  text: string,
+  chosenIds: readonly string[],
+): Band[] {
+  return searchByName(bands, text)
+    .filter((band) => !chosenIds.includes(band.id))
+    .slice(0, BAND_MATCH_LIMIT)
+}
+
+/**
+ * Items whose name contains the search text, ignoring case and accents. Names that
  * start with the text come first, then names with a word that does, then the rest;
  * each tier by name. Blank text finds nothing.
  */
-export function searchBands(bands: readonly Band[], text: string): Band[] {
-  return searchByName(bands, text)
-}
-
-/** `searchBands` for anything with a name: genres, venues, ... Same matching and order. */
 export function searchByName<T extends { name: string }>(items: readonly T[], text: string): T[] {
   const needle = fold(text.trim())
   if (needle === '') return []

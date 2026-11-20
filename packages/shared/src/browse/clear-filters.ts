@@ -1,13 +1,10 @@
-import { DEFAULT_BROWSE_QUERY, type BrowseQuery } from './query.ts'
+import type { BrowseQuery } from './query.ts'
 
 /**
- * The query with every filter (genres, city, date range, toggles) back at its
- * default. Keeps the visitor's chosen bands and their grouping, which are not filters.
- * `defaults` lets the page supply its own starting values, such as its default city.
+ * The query with every filter (genres, city, date range, venue, toggles) back at
+ * `defaults`, the page's starting values. Keeps the visitor's chosen bands and their
+ * grouping, which are not filters.
  */
-export function clearFilters(
-  query: BrowseQuery,
-  defaults: BrowseQuery = DEFAULT_BROWSE_QUERY,
-): BrowseQuery {
+export function clearFilters(query: BrowseQuery, defaults: BrowseQuery): BrowseQuery {
   return { ...defaults, bandIds: query.bandIds, grouping: query.grouping }
 }

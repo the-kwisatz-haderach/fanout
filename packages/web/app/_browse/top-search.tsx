@@ -2,13 +2,17 @@
 
 import { useId, useMemo, useState, type KeyboardEvent } from "react";
 import { flushSync } from "react-dom";
-import { topSearch, type Band, type Genre, type SearchCatalog, type Venue } from "@fanout/shared";
+import {
+  bandShownAnnouncement,
+  plural,
+  searchAction,
+  searchOptions,
+  topSearch,
+  venueLabel,
+  type SearchCatalog,
+  type SearchOption,
+} from "@fanout/shared";
 import { useBrowseQueryContext } from "./use-browse-query";
-
-type Option =
-  | { kind: "band"; item: Band }
-  | { kind: "genre"; item: Genre }
-  | { kind: "venue"; item: Venue };
 
 const GROUPS = [
   { kind: "band", heading: "Bands" },
@@ -30,14 +34,10 @@ export function TopSearch({ catalog, className }: { catalog: SearchCatalog; clas
   const [announcement, setAnnouncement] = useState("");
 
   const result = useMemo(() => topSearch(catalog, text), [catalog, text]);
-  const options: Option[] = [
-    ...result.bands.map((item) => ({ kind: "band", item }) as const),
-    ...result.genres.map((item) => ({ kind: "genre", item }) as const),
-    ...result.venues.map((item) => ({ kind: "venue", item }) as const),
-  ];
+  const options = searchOptions(result);
   const showList = open && text.trim() !== "";
   const activeOption = showList ? options[active] : undefined;
-  const optionId = (option: Option) => `${id}-${option.kind}-${option.item.id}`;
+  const optionId = (option: SearchOption) => `${id}-${option.kind}-${option.item.id}`;
 
   function close() {
     setText("");
@@ -45,28 +45,28 @@ export function TopSearch({ catalog, className }: { catalog: SearchCatalog; clas
     setActive(0);
   }
 
-  function choose(option: Option) {
+  /** Carries out what the browse module decides choosing the option does. */
+  function choose(option: SearchOption) {
     close();
-    if (option.kind === "genre") {
-      if (!query.genreIds.includes(option.item.id)) setGenreIds([...query.genreIds, option.item.id]);
-      setAnnouncement(`Showing ${option.item.name}.`);
-    } else if (option.kind === "venue") {
-      setVenueId(option.item.id);
-      setAnnouncement(`Showing dates at ${option.item.name}.`);
-    } else {
-      const band = option.item;
-      const isYours = query.bandIds.includes(band.id);
-      // Commit synchronously so the band's column exists before scrolling to it.
-      flushSync(() => {
-        if (!isYours) setBandIds([...query.bandIds, band.id]);
-        if (query.grouping !== "band") setGrouping("band");
-      });
-      const shown = scrollToBand(band.id);
-      setAnnouncement(
-        `${isYours ? "" : `Added ${band.name}. `}${
-          shown ? `Showing ${band.name}.` : `${band.name} is hidden by your filters.`
-        }`,
-      );
+    const action = searchAction(option, query);
+    switch (action.kind) {
+      case "filter-genre":
+        setGenreIds(action.genreIds);
+        setAnnouncement(action.announcement);
+        break;
+      case "filter-venue":
+        setVenueId(action.venueId);
+        setAnnouncement(action.announcement);
+        break;
+      case "show-band": {
+        // Commit synchronously so the band's column exists before scrolling to it.
+        flushSync(() => {
+          if (action.add) setBandIds(action.bandIds);
+          if (query.grouping !== "band") setGrouping("band");
+        });
+        setAnnouncement(bandShownAnnouncement(action, scrollToBand(action.band.id)));
+        break;
+      }
     }
   }
 
@@ -160,7 +160,7 @@ export function TopSearch({ catalog, className }: { catalog: SearchCatalog; clas
                     >
                       <span className="min-w-0 break-words">{optionLabel(option)}</span>
                       <span className="shrink-0 text-xs font-bold tracking-wide uppercase">
-                        {optionAction(option, query)}
+                        {searchAction(option, query).label}
                       </span>
                     </div>
                   );
@@ -174,28 +174,13 @@ export function TopSearch({ catalog, className }: { catalog: SearchCatalog; clas
   );
 }
 
-function optionLabel(option: Option): string {
-  return option.kind === "venue" ? `${option.item.name}, ${option.item.city.name}` : option.item.name;
-}
-
-/** What choosing the option will do, shown beside it. */
-function optionAction(
-  option: Option,
-  query: { bandIds: readonly string[]; genreIds: readonly string[]; venueId: string | null },
-): string {
-  switch (option.kind) {
-    case "band":
-      return query.bandIds.includes(option.item.id) ? "Go to" : "Add";
-    case "genre":
-      return query.genreIds.includes(option.item.id) ? "Filtered" : "Filter";
-    case "venue":
-      return query.venueId === option.item.id ? "Filtered" : "Filter";
-  }
+function optionLabel(option: SearchOption): string {
+  return option.kind === "venue" ? venueLabel(option.item) : option.item.name;
 }
 
 function listStatus(count: number): string {
   if (count === 0) return "No matches.";
-  return `${count} ${count === 1 ? "match" : "matches"}. Use the arrow keys to choose, Enter to select.`;
+  return `${plural(count, "match", "matches")}. Use the arrow keys to choose, Enter to select.`;
 }
 
 /** Scrolls to a band's column and moves focus to its heading. False if it isn't shown. */

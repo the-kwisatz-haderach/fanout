@@ -2,10 +2,7 @@
 
 import Link from "next/link";
 import { useId, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
-import { searchBands, type Band } from "@fanout/shared";
-
-/** Most search results listed at once. */
-const MAX_MATCHES = 8;
+import { plural, searchBands, type Band } from "@fanout/shared";
 
 const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
@@ -31,9 +28,7 @@ export function YourBands({
   const chosen = chosenIds ?? [];
   const byId = new Map(bands.map((band) => [band.id, band]));
   const chosenBands = chosen.flatMap((bandId) => byId.get(bandId) ?? []);
-  const matches = searchBands(bands, text)
-    .filter((band) => !chosen.includes(band.id))
-    .slice(0, MAX_MATCHES);
+  const matches = searchBands(bands, text, chosen);
 
   function add(band: Band) {
     onChange([...chosen, band.id]);
@@ -155,6 +150,5 @@ function searchStatus(text: string, matches: readonly Band[]): string {
   const [first] = matches;
   if (text.trim() === "") return "";
   if (!first) return "No bands found";
-  const count = `${matches.length} ${matches.length === 1 ? "band" : "bands"} found`;
-  return `${count}. Press Enter to add ${first.name}, or Tab to the list.`;
+  return `${plural(matches.length, "band")} found. Press Enter to add ${first.name}, or Tab to the list.`;
 }

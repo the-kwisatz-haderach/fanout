@@ -3,19 +3,21 @@
 import { useMemo, useRef } from "react";
 import {
   browse,
+  filterSummary,
+  findById,
   type Band,
   type BrowseResult,
   type Concert,
   type Genre,
+  type IsoDate,
   type Venue,
 } from "@fanout/shared";
 import { BandColumns } from "./band-columns";
 import { BrowseLayout } from "./browse-layout";
-import { cityName } from "./cities";
+import { CITY_OPTIONS } from "./cities";
 import { DateRangeBar } from "./date-range-bar";
 import { DayColumns } from "./day-columns";
 import { EmptyResult } from "./empty-result";
-import { filterSummary } from "./filter-summary";
 import { GroupingControl } from "./grouping-control";
 import { GenreFilter } from "./panel/genre-filter";
 import { FansLikeMeToggle } from "./panel/fans-like-me-toggle";
@@ -43,8 +45,8 @@ export function BrowseClient({
   genres: readonly Genre[];
   /** Every venue, to name the one chosen from the top-bar search. */
   venues: readonly Venue[];
-  /** `YYYY-MM-DD`, from the server, so date ranges count from the same day. */
-  today: string;
+  /** From the server, so date ranges count from the same day. */
+  today: IsoDate;
 }) {
   const {
     query,
@@ -84,15 +86,23 @@ export function BrowseClient({
       results={
         bandsReady ? (
           <>
-            <DateRangeBar span={inView ?? result.span}>
+            {/* With nothing shown there are no rows to observe, so ignore a stale `inView`. */}
+            <DateRangeBar span={result.span && (inView ?? result.span)}>
               <GroupingControl value={query.grouping} onChange={setGrouping} />
             </DateRangeBar>
             {result.source === "popular" && <PopularHeading />}
             <div ref={resultsRef}>
               {result.empty ? (
-                <EmptyResult reason={result.empty} onClearFilters={clearFilters} />
+                <EmptyResult
+                  reason={result.empty}
+                  source={result.source}
+                  onClearFilters={clearFilters}
+                />
               ) : (
-                <Results result={result} cityName={cityName(query.cityId)} />
+                <Results
+                  result={result}
+                  cityName={findById(CITY_OPTIONS, query.cityId)?.name ?? null}
+                />
               )}
             </div>
           </>

@@ -1,13 +1,26 @@
 export { DATE_RANGES, DEFAULT_DATE_RANGE_ID } from './date-range.ts'
 export type { DateRange, DateRangeId } from './date-range.ts'
 
+export { addDays, dateSpan } from './iso-date.ts'
+export type { DateSpan, IsoDate } from './iso-date.ts'
+export { findById } from './find-by-id.ts'
+export { plural } from './plural.ts'
+
+export { venueLabel } from './concert.ts'
 export type { Band, City, Concert, FanSignal, Genre, TicketState, Venue } from './concert.ts'
 
 export { browse } from './browse/browse.ts'
 export { searchBands } from './browse/band-search.ts'
-export { topSearch } from './browse/top-search.ts'
-export type { SearchCatalog, TopSearchResult } from './browse/top-search.ts'
+export { bandShownAnnouncement, searchAction, searchOptions, topSearch } from './browse/top-search.ts'
+export type {
+  SearchAction,
+  SearchCatalog,
+  SearchOption,
+  TopSearchResult,
+} from './browse/top-search.ts'
 export { clearFilters } from './browse/clear-filters.ts'
+export { filterSummary } from './browse/filter-summary.ts'
+export { nearMeApplies } from './browse/near-me.ts'
 export { DEFAULT_BROWSE_QUERY } from './browse/query.ts'
 export { restoreFilters, savedFiltersOf } from './browse/saved-filters.ts'
 export type { BrowseFilters } from './browse/saved-filters.ts'
@@ -19,7 +32,6 @@ export type {
   BrowseResult,
   DateEntry,
   DateGroupedResult,
-  DateSpan,
   DayGroup,
   EmptyReason,
   TourSummary,
