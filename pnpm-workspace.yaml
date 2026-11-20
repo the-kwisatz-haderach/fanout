@@ -3,3 +3,11 @@ packages:
 allowBuilds:
   sharp: false
   unrs-resolver: false
+catalog:
+  typescript: ^7.0.2
+  '@fanout/typescript-config': 'workspace:*'
+  eslint: '^10.14.0'
+  '@types/node': '^26.6.6'
+  '@types/react': '^19'
+  '@eslint-recommended/eslint-config-typescript': '^50.1.0'
+  'eslint-plugin-n': '^18.5.0'
